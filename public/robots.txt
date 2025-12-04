@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /admin-mktg-8472
+Disallow: /api/

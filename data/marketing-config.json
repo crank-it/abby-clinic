@@ -1,0 +1,28 @@
+{
+  "ga4": {
+    "enabled": false,
+    "measurementId": "",
+    "snippet": "",
+    "updatedAt": null
+  },
+  "googleSearchConsole": {
+    "enabled": false,
+    "verificationTag": "",
+    "updatedAt": null
+  },
+  "googleAds": {
+    "enabled": false,
+    "conversionId": "",
+    "conversionLabel": "",
+    "remarketingTag": "",
+    "updatedAt": null
+  },
+  "metaPixel": {
+    "enabled": false,
+    "pixelId": "",
+    "snippet": "",
+    "advancedMatching": false,
+    "updatedAt": null
+  },
+  "changelog": []
+}
