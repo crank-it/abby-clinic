@@ -54,9 +54,11 @@ Create `.env.local` in production with:
 ```bash
 # Admin Authentication
 ADMIN_PASSWORD=<choose-a-strong-password>
+ADMIN_PASSWORD=2c77$yxCQn`$
 
 # Auth cookie secret (generate a random 32+ char string)
 AUTH_SECRET=<random-secret-key>
+AUTH_SECRET=qHz89gHehM7KGNIySfBd03kJ2XSQtZWIhxUCLjyo/DA=
 ```
 
 **Important:** Change both values before going live. Use a password manager to generate secure values.
