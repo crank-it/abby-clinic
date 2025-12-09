@@ -6,7 +6,7 @@ import { Chrome, Key } from 'lucide-react';
 // Cliniko-style logo
 const ClinikoLogo = ({ className = "w-6 h-6" }: { className?: string }) => (
   <div className={`${className} rounded flex items-center justify-center`}>
-    <img src="../cliniko-logo-light.svg" alt="Cliniko Logo" className="w-10 h-10" />
+    <img src="/cliniko-logo-light.svg" alt="Cliniko Logo" className="w-10 h-10" />
   </div>
 );
 
