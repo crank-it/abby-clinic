@@ -1,6 +1,15 @@
 import { trustSignals } from '@/lib/data';
 import Link from 'next/link';
 import { YoonetLogo } from '@/components/YoonetLogo';
+import { Server, Shield, Trash2, Bot } from 'lucide-react';
+
+// Map trust signal titles to Feather icons
+const trustSignalIcons: Record<string, React.ReactNode> = {
+  "Australian hosted": <Server className="w-7 h-7 text-slate-300" />,
+  "Privacy first": <Shield className="w-7 h-7 text-slate-300" />,
+  "Auto-delete": <Trash2 className="w-7 h-7 text-slate-300" />,
+  "Our own AI": <Bot className="w-7 h-7 text-slate-300" />,
+};
 
 export const metadata = {
   title: 'About | Abby',
@@ -77,7 +86,7 @@ export default function AboutPage() {
                 className="bg-slate-800 rounded-2xl p-6 border border-slate-700"
               >
                 <div className="flex items-start gap-4">
-                  <div className="text-3xl">{signal.icon}</div>
+                  <div className="flex-shrink-0">{trustSignalIcons[signal.title]}</div>
                   <div>
                     <h3 className="text-lg font-semibold text-white mb-2">{signal.title}</h3>
                     <p className="text-slate-400">{signal.description}</p>

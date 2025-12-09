@@ -123,7 +123,7 @@ export default function HowItWorksPage() {
               <button
                 key={phase.id}
                 onClick={() => setActivePhase(i)}
-                className={`p-4 rounded-xl text-left transition-all ${
+                className={`p-4 rounded-xl text-left transition-all cursor-pointer ${
                   activePhase === i
                     ? 'bg-[#5371CA] text-white'
                     : 'bg-slate-700 text-slate-300 hover:bg-slate-600'

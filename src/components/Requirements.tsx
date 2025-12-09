@@ -1,44 +1,31 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { Chrome, Key } from 'lucide-react';
 
-// Chrome logo SVG
-const ChromeLogo = ({ className = "w-6 h-6" }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="24" cy="24" r="22" fill="white"/>
-    <path d="M24 14C18.4772 14 14 18.4772 14 24H24V14Z" fill="#EA4335"/>
-    <path d="M24 14C29.5228 14 34 18.4772 34 24C34 26.3894 33.1545 28.5752 31.7574 30.2574L24 24V14Z" fill="#FFCD40"/>
-    <path d="M24 34C29.5228 34 34 29.5228 34 24H24V34Z" fill="#4285F4"/>
-    <path d="M14 24C14 29.5228 18.4772 34 24 34L24 24H14Z" fill="#34A853"/>
-    <circle cx="24" cy="24" r="8" fill="white"/>
-    <circle cx="24" cy="24" r="4" fill="#4285F4"/>
-  </svg>
+// Cliniko-style logo
+const ClinikoLogo = ({ className = "w-6 h-6" }: { className?: string }) => (
+  <div className={`${className} rounded flex items-center justify-center`}>
+    <img src="../cliniko-logo-light.svg" alt="Cliniko Logo" className="w-10 h-10" />
+  </div>
 );
 
 export function Requirements({ variant = 'full' }: { variant?: 'full' | 'compact' }) {
   const requirements = [
     {
-      icon: <ChromeLogo className="w-6 h-6" />,
+      icon: <Chrome className="w-6 h-6 text-slate-300" />,
       label: "Chrome browser",
       description: "Desktop only (no mobile/tablet)",
       required: true
     },
     {
-      icon: (
-        <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded flex items-center justify-center">
-          <span className="text-white font-bold text-xs">C</span>
-        </div>
-      ),
+      icon: <ClinikoLogo className="w-6 h-6" />,
       label: "Cliniko account",
       description: "With SMS reminders enabled",
       required: true
     },
     {
-      icon: (
-        <svg className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-        </svg>
-      ),
+      icon: <Key className="w-6 h-6 text-slate-300" />,
       label: "API key access",
       description: "Admin or Power Receptionist role",
       required: true

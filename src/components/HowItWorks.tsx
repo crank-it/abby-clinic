@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { extensionFlow, colourCoding } from '@/lib/data';
+import { Smartphone, MessageSquare, Brain, FileText, MousePointer2, Palette } from 'lucide-react';
 
 // Chrome logo SVG component
 const ChromeLogo = ({ className = "w-8 h-8" }: { className?: string }) => (
@@ -22,6 +23,16 @@ const ClinikoLogo = ({ className = "w-8 h-8" }: { className?: string }) => (
     <span className="text-white font-bold text-sm">C</span>
   </div>
 );
+
+// Map step numbers to Feather icons
+const stepIcons: Record<number, React.ReactNode> = {
+  1: <Smartphone className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
+  2: <MessageSquare className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
+  3: <Brain className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
+  4: <FileText className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
+  5: <MousePointer2 className="w-6 h-6 md:w-7 md:h-7 text-white" />,
+  6: <Palette className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
+};
 
 export function HowItWorks() {
   return (
@@ -66,8 +77,8 @@ export function HowItWorks() {
                   className="relative flex flex-col items-center text-center"
                 >
                   <div className="relative z-10">
-                    <div className="w-14 h-14 md:w-16 md:h-16 bg-slate-800 border-2 border-slate-700 rounded-2xl flex items-center justify-center text-2xl md:text-3xl">
-                      {step.icon}
+                    <div className="w-14 h-14 md:w-16 md:h-16 bg-slate-800 border-2 border-slate-700 rounded-2xl flex items-center justify-center">
+                      {stepIcons[step.step]}
                     </div>
                     <div className="absolute -top-2 -right-2 w-5 h-5 md:w-6 md:h-6 bg-slate-600 rounded-full flex items-center justify-center text-[10px] md:text-xs font-bold text-white">
                       {step.step}
@@ -104,12 +115,12 @@ export function HowItWorks() {
                   className="relative flex flex-col items-center text-center"
                 >
                   <div className="relative z-10">
-                    <div className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center text-2xl md:text-3xl ${
+                    <div className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center ${
                       step.step === 5
                         ? 'bg-[#5371CA] border-2 border-[#6381d4]'
                         : 'bg-slate-800 border-2 border-slate-700'
                     }`}>
-                      {step.icon}
+                      {stepIcons[step.step]}
                     </div>
                     <div className={`absolute -top-2 -right-2 w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center text-[10px] md:text-xs font-bold text-white ${
                       step.step === 5 ? 'bg-[#6381d4]' : 'bg-[#5371CA]'
@@ -155,8 +166,8 @@ export function HowItWorks() {
                   <div className="bg-teal-200 rounded-sm"></div>
                 </div>
               </div>
-              <p className="text-slate-400 text-sm">Your Cliniko calendar</p>
-              <p className="text-slate-500 text-xs">(before clicking)</p>
+              <p className="text-white font-semibold">Your Cliniko calendar</p>
+              <p className="text-slate-400 text-xs">Before clicking</p>
             </div>
 
             {/* Click the extension */}
@@ -166,11 +177,11 @@ export function HowItWorks() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                 </svg>
                 <motion.div
-                  className="w-16 h-16 bg-[#5371CA] rounded-2xl flex items-center justify-center cursor-pointer shadow-lg shadow-[#5371CA]/30"
+                  className="w-16 h-16 bg-[#1c283c] rounded-2xl flex items-center justify-center cursor-pointer border-slate-700 border-2 hover:bg-[#1e293b]"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <span className="text-white font-bold text-xl">A</span>
+                  <img src="/abby-extension.svg" alt="Abby Logo" className="w-10 h-10" />
                 </motion.div>
                 <p className="text-[#7b93db] text-sm font-medium">Click here</p>
               </div>
@@ -240,7 +251,7 @@ export function HowItWorks() {
           <ul className="space-y-3 text-slate-300">
             <li className="flex items-start gap-3">
               <span className="text-[#5371CA] mt-1">•</span>
-              <span><strong className="text-white">Click to reveal:</strong> The extension overlays status on your calendar when you click it—it&apos;s not automatic</span>
+              <span><strong className="text-white">Click to reveal:</strong> The extension applies status updates to your calendar whenever you open it.</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="text-[#5371CA] mt-1">•</span>
@@ -248,11 +259,11 @@ export function HowItWorks() {
             </li>
             <li className="flex items-start gap-3">
               <span className="text-[#5371CA] mt-1">•</span>
-              <span><strong className="text-white">15-minute cycle:</strong> Abby checks for new replies every 15 minutes (Cliniko doesn&apos;t support real-time)</span>
+              <span><strong className="text-white">15-minute cycle:</strong> Abby checks for new responses every 15 minutes, consistent with Cliniko&apos;s update cycle.</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="text-[#5371CA] mt-1">•</span>
-              <span><strong className="text-white">Read-only:</strong> Abby never sends SMS—it only interprets replies to your existing Cliniko reminders</span>
+              <span><strong className="text-white">Read-only:</strong> Abby operates in a read-only capacity and does not send SMS messages. It interprets and displays replies received through your existing Cliniko reminders.</span>
             </li>
           </ul>
         </motion.div>

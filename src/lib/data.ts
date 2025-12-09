@@ -230,7 +230,7 @@ export const quickStart = [
   {
     step: 1,
     title: "Create your Abby account",
-    instruction: "Sign up at abby.clinic – just email and password."
+    instruction: "Sign up at abby.clinic"
   },
   {
     step: 2,

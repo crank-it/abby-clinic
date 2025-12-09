@@ -5,14 +5,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FAQAccordion } from '@/components/FAQAccordion';
 import { comprehensiveFAQ, whatAbbyIs, whatAbbyIsNot } from '@/lib/data';
 import Link from 'next/link';
+import { Wrench, Puzzle, Brain, AlertTriangle, Lock, CreditCard, Check, X } from 'lucide-react';
 
 const categories = [
-  { id: 'setup', label: 'Setup & Installation', icon: '🔧' },
-  { id: 'extension', label: 'Chrome Extension', icon: '🧩' },
-  { id: 'ai', label: 'AI & Accuracy', icon: '🧠' },
-  { id: 'limitations', label: 'Limitations', icon: '⚠️' },
-  { id: 'privacy', label: 'Privacy & Security', icon: '🔒' },
-  { id: 'billing', label: 'Billing & Pricing', icon: '💳' },
+  { id: 'setup', label: 'Setup & Installation', icon: <Wrench className="w-4 h-4" /> },
+  { id: 'extension', label: 'Chrome Extension', icon: <Puzzle className="w-4 h-4" /> },
+  { id: 'ai', label: 'AI & Accuracy', icon: <Brain className="w-4 h-4" /> },
+  { id: 'limitations', label: 'Limitations', icon: <AlertTriangle className="w-4 h-4" /> },
+  { id: 'privacy', label: 'Privacy & Security', icon: <Lock className="w-4 h-4" /> },
+  { id: 'billing', label: 'Billing & Pricing', icon: <CreditCard className="w-4 h-4" /> },
 ];
 
 export default function FAQPage() {
@@ -53,7 +54,9 @@ export default function FAQPage() {
               className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700"
             >
               <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                <span className="w-6 h-6 bg-[#5371CA] rounded-full flex items-center justify-center text-sm">✓</span>
+                <span className="w-6 h-6 bg-[#5371CA] rounded-full flex items-center justify-center">
+                  <Check className="w-3.5 h-3.5 text-white" />
+                </span>
                 Abby IS
               </h2>
               <ul className="space-y-3">
@@ -74,7 +77,9 @@ export default function FAQPage() {
               className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700"
             >
               <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                <span className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-sm">✗</span>
+                <span className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
+                  <X className="w-3.5 h-3.5 text-white" />
+                </span>
                 Abby is NOT
               </h2>
               <ul className="space-y-3">
@@ -98,13 +103,13 @@ export default function FAQPage() {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 cursor-pointer border ${
                   activeCategory === cat.id
-                    ? 'bg-[#5371CA] text-white'
-                    : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                    ? 'bg-[#5371CA] text-white border-[#5371CA]'
+                    : 'bg-slate-800 text-slate-300 hover:bg-slate-700 border-slate-600'
                 }`}
               >
-                <span className="mr-2">{cat.icon}</span>
+                {cat.icon}
                 {cat.label}
               </button>
             ))}

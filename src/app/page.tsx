@@ -9,6 +9,15 @@ import { HowItWorks } from '@/components/HowItWorks';
 import { Requirements } from '@/components/Requirements';
 import { testimonial, stats, connectSteps } from '@/lib/data';
 import Link from 'next/link';
+import { Key, Brain, MousePointer2, Palette } from 'lucide-react';
+
+// Map connect step indices to Feather icons
+const connectStepIcons: Record<number, React.ReactNode> = {
+  0: <Key className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
+  1: <Brain className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
+  2: <MousePointer2 className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
+  3: <Palette className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
+};
 
 export default function Home() {
   const [showDemo, setShowDemo] = useState(false);
@@ -115,8 +124,8 @@ export default function Home() {
                 className="text-center"
               >
                 <div className="relative">
-                  <div className="w-14 h-14 md:w-16 md:h-16 bg-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl md:text-3xl">
-                    {step.icon}
+                  <div className="w-14 h-14 md:w-16 md:h-16 bg-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                    {connectStepIcons[i]}
                   </div>
                   <div className="absolute -top-1 -right-1 md:right-auto md:left-1/2 md:ml-6 w-6 h-6 bg-[#5371CA] rounded-full flex items-center justify-center text-xs font-bold text-white">
                     {i + 1}
@@ -149,7 +158,7 @@ export default function Home() {
             </a>
             <Link
               href="/pricing"
-              className="text-slate-400 hover:text-white transition-colors"
+              className="text-slate-400 hover:text-white transition-colors active:underline"
             >
               See pricing →
             </Link>

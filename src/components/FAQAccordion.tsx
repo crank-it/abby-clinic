@@ -42,7 +42,7 @@ export function FAQAccordion({ items, title }: FAQAccordionProps) {
           >
             <button
               onClick={() => setOpenIndex(openIndex === index ? null : index)}
-              className="w-full text-left px-5 py-4 flex items-center justify-between text-white hover:bg-slate-700/50 transition-colors duration-200"
+              className="w-full text-left px-5 py-4 flex items-center justify-between text-white hover:bg-slate-700/50 transition-colors duration-200 cursor-pointer"
             >
               <span className="font-medium pr-4">{item.q}</span>
               <motion.svg
