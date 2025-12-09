@@ -1,9 +1,9 @@
 {
   "ga4": {
-    "enabled": false,
-    "measurementId": "",
+    "enabled": true,
+    "measurementId": "G-2JJFF015FR",
     "snippet": "",
-    "updatedAt": null
+    "updatedAt": "2025-12-10"
   },
   "googleSearchConsole": {
     "enabled": false,
