@@ -5,6 +5,10 @@
     "snippet": "",
     "updatedAt": "2025-12-10"
   },
+  "gtm": {
+    "enabled": true,
+    "containerId": "GTM-MQNC7Q9F"
+  },
   "googleSearchConsole": {
     "enabled": false,
     "verificationTag": "",
