@@ -54,10 +54,12 @@ Create `.env.local` in production with:
 ```bash
 # Admin Authentication
 ADMIN_PASSWORD=<choose-a-strong-password>
+
 ADMIN_PASSWORD=2c77$yxCQn`$
 
 # Auth cookie secret (generate a random 32+ char string)
 AUTH_SECRET=<random-secret-key>
+
 AUTH_SECRET=qHz89gHehM7KGNIySfBd03kJ2XSQtZWIhxUCLjyo/DA=
 ```
 
@@ -113,15 +115,15 @@ The `TrackingScripts` component in `/src/components/TrackingScripts.tsx`:
 
 ### Before deploying:
 
-- [ ] Set strong `ADMIN_PASSWORD` in production env vars
-- [ ] Set unique `AUTH_SECRET` in production env vars
-- [ ] Verify `data/` directory exists and is writable
-- [ ] Test admin login works locally
+- [/] Set strong `ADMIN_PASSWORD` in production env vars
+- [/] Set unique `AUTH_SECRET` in production env vars
+- [/] Verify `data/` directory exists and is writable
+- [/] Test admin login works locally
 
 ### After deploying:
 
-- [ ] Verify `/admin-mktg-8472` redirects to sign-in
-- [ ] Verify login works with production password
+- [/] Verify `/admin-mktg-8472` redirects to sign-in
+- [/] Verify login works with production password
 - [ ] Test saving a GA4 measurement ID
 - [ ] Verify tracking script appears in page source when enabled
 - [ ] Check robots.txt is accessible at `/robots.txt`
