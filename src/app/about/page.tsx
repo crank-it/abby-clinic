@@ -27,10 +27,20 @@ export default function AboutPage() {
           </h1>
 
           <div className="bg-slate-800 rounded-2xl p-8 mb-8 border border-slate-700">
-            <div className="w-full rounded-xl overflow-hidden mb-6">
+            {/* Desktop/tablet image - hidden on mobile */}
+            <div className="hidden md:block w-full rounded-xl overflow-hidden mb-6">
               <img
                 src="/ben-and-gav.jpeg"
                 alt="Ben and Gav - founders of Yoonet and Abby"
+                className="w-full h-auto object-cover"
+              />
+            </div>
+
+            {/* Mobile-only collage image */}
+            <div className="md:hidden w-full rounded-xl overflow-hidden mb-6">
+              <img
+                src="/mobile-about.jpeg"
+                alt="Ben and Gav through the years - from under 9s football to summer 2025"
                 className="w-full h-auto object-cover"
               />
             </div>

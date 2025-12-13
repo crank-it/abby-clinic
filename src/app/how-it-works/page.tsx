@@ -1,42 +1,159 @@
 'use client';
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { interpretSMS } from '@/lib/interpretSMS';
 import Link from 'next/link';
 
-const phases = [
+// Animation variants that are SSR-safe - content visible by default
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 }
+};
+
+const fadeIn = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 }
+};
+
+const scaleIn = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { opacity: 1, scale: 1 }
+};
+import {
+  Smartphone,
+  MessageSquare,
+  Brain,
+  FileText,
+  MousePointer2,
+  Palette,
+  Clock,
+  Eye,
+  Search,
+  PenLine,
+  RefreshCw,
+  AlertTriangle,
+  CheckCircle2,
+  XCircle,
+  ArrowRight,
+  ArrowDown,
+  Zap,
+  Timer,
+  Users,
+  TrendingDown
+} from 'lucide-react';
+
+// Manual process steps - the pain points
+const manualSteps = [
   {
-    id: "sms-sent",
-    title: "Cliniko sends the reminder",
-    description: "Your normal Cliniko SMS reminder goes out to the patient. Abby doesn't send anything – we just watch for replies."
+    icon: MessageSquare,
+    title: "Open communication logs",
+    description: "Navigate to Cliniko's communication logs and wait for the page to load",
+    time: "30 sec",
+    pain: "Constant tab switching disrupts your flow"
   },
   {
-    id: "patient-replies",
-    title: "Patient replies via SMS",
-    description: "Whether they say 'Yes!', 'Can't make it', or something ambiguous, Abby captures the response."
+    icon: Search,
+    title: "Hunt through messages",
+    description: "Scroll through the log trying to spot new SMS replies among dozens of conversations",
+    time: "45 sec",
+    pain: "Easy to miss replies buried in the noise"
   },
   {
-    id: "ai-interprets",
-    title: "AI interprets the intent",
-    description: "Our proprietary AI (not ChatGPT) analyses the message. 98% accuracy on single-intent messages. Trained specifically on healthcare appointment language."
+    icon: Eye,
+    title: "Interpret the response",
+    description: "Figure out what the patient actually means - are they confirming, cancelling, or asking something?",
+    time: "15 sec",
+    pain: "Ambiguous messages cause confusion"
   },
   {
-    id: "note-posted",
-    title: "Response logged to appointment",
-    description: "Abby posts to the appointment notes: '[Intent] - [Original SMS] - [Timestamp]'. Your records stay complete."
+    icon: Search,
+    title: "Find the appointment",
+    description: "Switch to the calendar and search for the patient's appointment",
+    time: "30 sec",
+    pain: "Which appointment are they even replying to?"
   },
   {
-    id: "calendar-updates",
-    title: "Calendar shows the status",
-    description: "The Chrome extension colour-codes appointments every 15 minutes. Grey for confirmed, red for attention needed."
+    icon: PenLine,
+    title: "Update the records",
+    description: "Open the appointment, add a note, maybe change the status",
+    time: "20 sec",
+    pain: "Manual data entry invites human error"
+  },
+  {
+    icon: RefreshCw,
+    title: "Repeat. All. Day.",
+    description: "Do this for every single SMS reply, every day, forever",
+    time: "∞",
+    pain: "The grind never stops"
   }
 ];
 
+// Abby's journey steps - the solution (more technical)
+const abbyJourney = [
+  {
+    step: 1,
+    icon: Smartphone,
+    title: "Cliniko sends reminder",
+    description: "Your existing Cliniko SMS reminder workflow continues unchanged. Abby doesn't send anything - it observes the conversation thread.",
+    technical: "Abby monitors the Cliniko API endpoint for SMS responses linked to appointment reminder messages.",
+    gradient: "from-blue-500 to-blue-600",
+    glow: "shadow-blue-500/30"
+  },
+  {
+    step: 2,
+    icon: MessageSquare,
+    title: "Patient replies via SMS",
+    description: "The patient texts back whatever they want - 'Yes', 'Can we reschedule?', '👍', or even 'huh?'. Every reply is captured.",
+    technical: "Responses are matched to appointment IDs using Cliniko's conversation threading. Reply-to matching handles edge cases.",
+    gradient: "from-emerald-500 to-emerald-600",
+    glow: "shadow-emerald-500/30"
+  },
+  {
+    step: 3,
+    icon: Brain,
+    title: "AI interprets intent",
+    description: "Our proprietary language model - trained specifically on healthcare appointment language - determines what the patient means.",
+    technical: "98% accuracy on single-intent messages. Conflicting intents (\"Yes but I can't come\") are flagged for human review, not guessed.",
+    gradient: "from-purple-500 to-purple-600",
+    glow: "shadow-purple-500/30",
+    highlight: true
+  },
+  {
+    step: 4,
+    icon: FileText,
+    title: "Logged to appointment notes",
+    description: "Abby writes a structured note to the appointment: the interpretation, original SMS text, and timestamp.",
+    technical: "Format: [CONFIRMED/CANCELLED/CALL TO DISCUSS] - \"original message\" - timestamp. Fully auditable trail.",
+    gradient: "from-amber-500 to-amber-600",
+    glow: "shadow-amber-500/30"
+  },
+  {
+    step: 5,
+    icon: MousePointer2,
+    title: "Click the extension",
+    description: "When you're ready to see who's coming, click the Abby icon in your Chrome toolbar. That's it.",
+    technical: "The extension reads appointment notes via Cliniko's session and applies CSS overlays. No additional API calls needed.",
+    gradient: "from-[#5371CA] to-[#6381d4]",
+    glow: "shadow-[#5371CA]/30"
+  },
+  {
+    step: 6,
+    icon: Palette,
+    title: "Calendar shows status",
+    description: "Appointments light up: white for confirmed, grey with red underline for needs attention, coloured for no reply yet.",
+    technical: "Colour-coding is applied via DOM manipulation. Clicking any appointment refreshes Cliniko's view - just click Abby again to reapply.",
+    gradient: "from-pink-500 to-pink-600",
+    glow: "shadow-pink-500/30"
+  }
+];
+
+// Example messages for demo
 const examples = [
   {
-    category: "Confirmations",
-    colour: "bg-gray-200 border-gray-400",
+    category: "Confirmed",
+    colour: "bg-white border-slate-300",
+    badgeClass: "bg-emerald-100 text-emerald-700",
     messages: [
       "Yes, see you then",
       "Confirmed thanks",
@@ -47,7 +164,9 @@ const examples = [
   },
   {
     category: "Needs attention",
-    colour: "bg-red-100 border-red-400",
+    colour: "bg-gray-100 border-slate-300",
+    badgeClass: "bg-red-100 text-red-700",
+    hasRedUnderline: true,
     messages: [
       "I need to cancel",
       "Can we reschedule?",
@@ -56,141 +175,398 @@ const examples = [
     ]
   },
   {
-    category: "Unclear",
-    colour: "bg-amber-100 border-amber-400",
+    category: "Flagged for review",
+    colour: "bg-amber-50 border-amber-300",
+    badgeClass: "bg-amber-100 text-amber-700",
     messages: [
       "Maybe",
       "?",
-      "What time was it again?"
+      "What time was it again?",
+      "Yep sorry I can't come"
     ]
   }
 ];
 
+// Technical specs
 const specs = {
   processing: {
     title: "Processing",
+    icon: Zap,
     items: [
-      "96% of SMS responses processed successfully",
-      "98% interpretation accuracy",
-      "15-minute sync frequency"
+      { label: "SMS capture rate", value: "96%" },
+      { label: "Interpretation accuracy", value: "98%" },
+      { label: "Sync frequency", value: "15 min" },
+      { label: "Processing latency", value: "<2 sec" }
     ]
   },
   integration: {
     title: "Integration",
+    icon: RefreshCw,
     items: [
-      "Cliniko REST API (read-only access)",
-      "Chrome browser required",
-      "No software installation beyond extension"
+      { label: "API access", value: "Read-only" },
+      { label: "Data modified", value: "Notes only" },
+      { label: "Browser", value: "Chrome" },
+      { label: "Installation", value: "Extension only" }
     ]
   },
   limits: {
     title: "Limits",
+    icon: Users,
     items: [
-      "Up to 24 practitioners per account",
-      "Standard appointments only (not one-off SMS)",
-      "English language support"
+      { label: "Max practitioners", value: "24" },
+      { label: "Locations", value: "Unlimited" },
+      { label: "SMS types", value: "Reminders only" },
+      { label: "Language", value: "English" }
     ]
   }
 };
 
-export default function HowItWorksPage() {
-  const [activePhase, setActivePhase] = useState(0);
+// Animated counter for time saved
+function AnimatedTime({ value, isInView }: { value: number; isInView: boolean }) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (isInView) {
+      const duration = 2000;
+      const steps = 60;
+      const increment = value / steps;
+      let current = 0;
+
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= value) {
+          setCount(value);
+          clearInterval(timer);
+        } else {
+          setCount(Math.floor(current));
+        }
+      }, duration / steps);
+
+      return () => clearInterval(timer);
+    }
+  }, [isInView, value]);
+
+  return <span>{count}</span>;
+}
+
+function ManualProcessSection() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  // Calculate total time
+  const totalSeconds = 140; // ~2.5 minutes per SMS
+  const responsesPerDay = 30; // Average clinic
+  const minutesPerDay = Math.round((totalSeconds * responsesPerDay) / 60);
+  const hoursPerWeek = Math.round((minutesPerDay * 5) / 60);
+
+  return (
+    <section ref={ref} className="py-16 md:py-40 px-4 relative overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-red-950/20 to-slate-900" />
+      <div className="absolute top-1/4 right-0 w-96 h-96 bg-red-500/10 rounded-full blur-3xl" />
+
+      <div className="max-w-6xl mx-auto relative z-10">
+        {/* Header - no animation wrapper to ensure content is always visible */}
+        <div className="text-center mb-12 md:mb-20">
+          <div className="inline-flex items-center gap-2 bg-red-500/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-red-500/30">
+            <AlertTriangle className="w-4 h-4 text-red-400" />
+            <span className="text-red-300 text-sm font-medium">The current reality</span>
+          </div>
+
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-heading">
+            The manual SMS checking trap
+          </h2>
+          <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto">
+            Every patient reply triggers the same tedious process. Here&apos;s what your team does dozens of times per day:
+          </p>
+        </div>
+
+        {/* Manual steps grid - individual cards animate */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-16 md:mb-24">
+          {manualSteps.map((step, i) => (
+            <motion.div
+              key={i}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={fadeInUp}
+              transition={{ delay: i * 0.05, duration: 0.4 }}
+              className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-slate-700 hover:border-red-500/50 transition-colors group"
+            >
+              <div className="flex flex-col gap-4 md:gap-5">
+                <div className="flex items-center justify-between">
+                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-red-500/20 flex items-center justify-center flex-shrink-0 group-hover:bg-red-500/30 transition-colors">
+                    <step.icon className="w-6 h-6 md:w-7 md:h-7 text-red-400" />
+                  </div>
+                  <span className="text-red-400 text-sm font-mono bg-red-500/20 px-3 py-1 rounded-lg">
+                    +{step.time}
+                  </span>
+                </div>
+                <div className="space-y-2 md:space-y-3">
+                  <h3 className="text-white font-semibold text-base md:text-lg">{step.title}</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed">{step.description}</p>
+                  <p className="text-red-400/80 text-sm italic">{step.pain}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Time cost summary */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={scaleIn}
+          transition={{ duration: 0.5 }}
+          className="bg-gradient-to-r from-red-500/20 via-red-600/20 to-red-500/20 rounded-3xl p-6 md:p-12 border border-red-500/30"
+        >
+          <div className="grid grid-cols-3 gap-4 md:gap-8 text-center">
+            <div>
+              <div className="text-2xl sm:text-4xl md:text-6xl font-bold text-red-400 mb-1 md:mb-2">
+                ~<AnimatedTime value={Math.round(totalSeconds / 60)} isInView={isInView} />min
+              </div>
+              <p className="text-slate-400 text-xs sm:text-sm md:text-base">per SMS reply</p>
+            </div>
+            <div>
+              <div className="text-2xl sm:text-4xl md:text-6xl font-bold text-red-400 mb-1 md:mb-2">
+                <AnimatedTime value={minutesPerDay} isInView={isInView} />min
+              </div>
+              <p className="text-slate-400 text-xs sm:text-sm md:text-base">per day (30 replies)</p>
+            </div>
+            <div>
+              <div className="text-2xl sm:text-4xl md:text-6xl font-bold text-red-400 mb-1 md:mb-2">
+                <AnimatedTime value={hoursPerWeek} isInView={isInView} />hrs
+              </div>
+              <p className="text-slate-400 text-xs sm:text-sm md:text-base">per week wasted</p>
+            </div>
+          </div>
+
+          <div className="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-red-500/30 text-center">
+            <p className="text-slate-300 text-sm md:text-lg">
+              That&apos;s <span className="text-red-400 font-bold">{hoursPerWeek * 52} hours per year</span> spent on a task that adds zero value.
+            </p>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function JourneyStep({
+  step,
+  index,
+  isLast
+}: {
+  step: typeof abbyJourney[0];
+  index: number;
+  isLast: boolean;
+}) {
+  const isEven = index % 2 === 0;
+  const Icon = step.icon;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="relative py-6 md:py-8"
+    >
+      {/* Connection line to next step - hidden on mobile */}
+      {!isLast && (
+        <div className="hidden md:block absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-full w-0.5 h-16 bg-gradient-to-b from-slate-600 to-transparent" />
+      )}
+
+      <div className={`flex flex-col md:flex-row items-center gap-6 md:gap-20 ${isEven ? '' : 'md:flex-row-reverse'}`}>
+        {/* Icon */}
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          className={`relative flex-shrink-0 w-20 h-20 md:w-36 md:h-36 rounded-2xl md:rounded-3xl bg-gradient-to-br ${step.gradient} flex items-center justify-center shadow-2xl ${step.glow} ${step.highlight ? 'ring-4 ring-purple-500/50' : ''}`}
+        >
+          <Icon className="w-10 h-10 md:w-16 md:h-16 text-white" />
+          {step.highlight && (
+            <motion.div
+              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="absolute inset-0 rounded-2xl md:rounded-3xl bg-purple-500/20"
+            />
+          )}
+        </motion.div>
+
+        {/* Content */}
+        <div className={`text-center md:text-left ${isEven ? '' : 'md:text-right'} max-w-xl space-y-4 md:space-y-6`}>
+          <div className="space-y-2 md:space-y-4">
+            <h3 className="text-xl md:text-3xl font-bold text-white">
+              {step.title}
+            </h3>
+            <p className="text-slate-400 text-base md:text-xl leading-relaxed">
+              {step.description}
+            </p>
+          </div>
+
+          {/* Technical detail with prismatic glow */}
+          <motion.div
+            className={`relative inline-block ${isEven ? '' : 'md:ml-auto'}`}
+            whileHover={{ scale: 1.02 }}
+          >
+            {/* Outer glow - large and soft */}
+            <div className="absolute -inset-3 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-cyan-400 rounded-2xl blur-2xl opacity-50" />
+            {/* Middle glow - medium */}
+            <div className="absolute -inset-1.5 bg-gradient-to-r from-violet-500 via-fuchsia-400 to-cyan-300 rounded-xl blur-md opacity-60" />
+            {/* Inner border glow */}
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-violet-400 via-fuchsia-300 to-cyan-200 rounded-xl opacity-40" />
+            {/* Content box */}
+            <div className="relative flex items-start gap-3 bg-slate-950/95 backdrop-blur-sm rounded-xl px-4 py-4 md:px-6 md:py-5 border border-white/20">
+              <Zap className="w-4 h-4 md:w-5 md:h-5 text-fuchsia-400 mt-0.5 flex-shrink-0" />
+              <p className="text-slate-100 text-xs md:text-sm leading-relaxed">{step.technical}</p>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function AbbyJourneySection() {
+  return (
+    <section className="py-16 md:py-40 px-4 relative overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900" />
+      <div className="absolute top-1/4 left-0 w-96 h-96 bg-[#5371CA]/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+
+      <div className="max-w-5xl mx-auto relative z-10">
+        {/* Header - no animation wrapper */}
+        <div className="text-center mb-12 md:mb-32">
+          <div className="inline-flex items-center gap-2 bg-emerald-500/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-emerald-500/30">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span className="text-emerald-300 text-sm font-medium">With Abby</span>
+          </div>
+
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-heading">
+            The automated journey
+          </h2>
+          <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+            From patient reply to colour-coded calendar - every step handled automatically
+          </p>
+
+          {/* Scroll indicator - hidden on mobile */}
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="mt-12 hidden md:block"
+          >
+            <ArrowDown className="w-6 h-6 text-slate-500 mx-auto" />
+          </motion.div>
+        </div>
+
+        {/* Journey Steps */}
+        <div className="space-y-12 md:space-y-20">
+          {abbyJourney.map((step, index) => (
+            <JourneyStep
+              key={step.step}
+              step={step}
+              index={index}
+              isLast={index === abbyJourney.length - 1}
+            />
+          ))}
+        </div>
+
+        {/* Result comparison */}
+        <div className="mt-20 md:mt-48">
+          <div className="text-center mb-10 md:mb-16">
+            <h3 className="text-2xl md:text-4xl font-bold text-white mb-4 md:mb-6 font-heading">
+              Your new reality
+            </h3>
+            <p className="text-slate-400 text-base md:text-xl max-w-2xl mx-auto leading-relaxed">
+              One click shows you exactly who&apos;s coming. No more communication logs, no hunting through messages, no manual updates.
+            </p>
+          </div>
+
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-20">
+            {/* Stats */}
+            <div className="flex flex-col gap-4 md:gap-6">
+              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl px-6 md:px-8 py-4 md:py-5 border border-slate-700">
+                <span className="text-emerald-400 font-bold text-3xl md:text-4xl">0</span>
+                <span className="text-slate-400 text-base md:text-lg ml-3">manual checks</span>
+              </div>
+              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl px-6 md:px-8 py-4 md:py-5 border border-slate-700">
+                <span className="text-emerald-400 font-bold text-3xl md:text-4xl">1</span>
+                <span className="text-slate-400 text-base md:text-lg ml-3">click to see all</span>
+              </div>
+            </div>
+
+            {/* Abby icon - clean, no box */}
+            <motion.div
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="relative"
+            >
+              {/* Glow effect */}
+              <div className="absolute inset-0 bg-[#5371CA]/30 rounded-full blur-2xl scale-150" />
+              <img src="/abby-extension.svg" alt="Abby" className="relative w-16 h-16 md:w-20 md:h-20" />
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function WhatAbbyUnderstandsSection() {
   const [selectedExample, setSelectedExample] = useState<string | null>(null);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Hero */}
-      <section className="py-16 px-4">
-        <div className="max-w-5xl mx-auto text-center">
-          <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
-            How Abby works
-          </h1>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-            From patient SMS to colour-coded calendar – see exactly what happens at each step.
-          </p>
-        </div>
-      </section>
-
-      {/* The Journey - Step by Step */}
-      <section className="py-16 px-4 bg-slate-800/50">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-white mb-8 text-center">
-            The Journey
-          </h2>
-
-          <div className="grid md:grid-cols-5 gap-4 mb-8">
-            {phases.map((phase, i) => (
-              <button
-                key={phase.id}
-                onClick={() => setActivePhase(i)}
-                className={`p-4 rounded-xl text-left transition-all cursor-pointer ${
-                  activePhase === i
-                    ? 'bg-[#5371CA] text-white'
-                    : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-                }`}
-              >
-                <div className="text-2xl font-bold mb-1">{i + 1}</div>
-                <div className="text-sm font-medium">{phase.title}</div>
-              </button>
-            ))}
-          </div>
-
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activePhase}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="bg-slate-800 rounded-2xl p-8 border border-slate-700"
-            >
-              <h3 className="text-xl font-semibold text-white mb-3">
-                {phases[activePhase].title}
-              </h3>
-              <p className="text-slate-400 text-lg">
-                {phases[activePhase].description}
-              </p>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </section>
-
-      {/* What Abby Understands */}
-      <section className="py-16 px-4">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-white mb-8 text-center">
+    <section className="py-16 md:py-40 px-4 bg-slate-800/50">
+      <div className="max-w-5xl mx-auto">
+        {/* Header - no animation wrapper */}
+        <div className="text-center mb-10 md:mb-16">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-heading">
             What Abby understands
           </h2>
-          <p className="text-slate-400 text-center mb-8 max-w-2xl mx-auto">
-            Click any message to see how Abby would interpret it.
+          <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+            Click any message to see how Abby interprets it. Our AI handles the nuance so you don&apos;t have to.
           </p>
+        </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {examples.map((category) => (
-              <div key={category.category} className="bg-slate-800 rounded-2xl p-6 border border-slate-700">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className={`w-4 h-4 ${category.colour} border-2 rounded`} />
-                  <h3 className="text-lg font-semibold text-white">{category.category}</h3>
-                </div>
-                <div className="space-y-2">
-                  {category.messages.map((msg) => {
-                    const result = interpretSMS(msg);
-                    const isSelected = selectedExample === msg;
+        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+          {examples.map((category, catIndex) => (
+            <motion.div
+              key={category.category}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={fadeInUp}
+              transition={{ delay: catIndex * 0.05 }}
+              className="bg-slate-800 rounded-2xl p-6 md:p-8 border border-slate-700"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className={`w-6 h-6 ${category.colour} ${category.hasRedUnderline ? 'border-b-2 border-b-red-500' : ''} border-2 rounded`} />
+                <h3 className="text-lg font-semibold text-white">{category.category}</h3>
+              </div>
+              <div className="space-y-3">
+                {category.messages.map((msg) => {
+                  const result = interpretSMS(msg);
+                  const isSelected = selectedExample === msg;
 
-                    return (
-                      <button
-                        key={msg}
-                        onClick={() => setSelectedExample(isSelected ? null : msg)}
-                        className={`w-full text-left p-3 rounded-lg transition-all ${
-                          isSelected
-                            ? 'bg-[#5371CA]/20 border border-[#6381d4]'
-                            : 'bg-slate-700 hover:bg-slate-600'
-                        }`}
-                      >
-                        <p className="text-slate-300 text-sm">&quot;{msg}&quot;</p>
+                  return (
+                    <button
+                      key={msg}
+                      onClick={() => setSelectedExample(isSelected ? null : msg)}
+                      className={`w-full text-left p-3 rounded-xl transition-all ${
+                        isSelected
+                          ? 'bg-[#5371CA]/20 border border-[#6381d4]'
+                          : 'bg-slate-700/50 hover:bg-slate-700 border border-transparent'
+                      }`}
+                    >
+                      <p className="text-slate-300 text-sm">&quot;{msg}&quot;</p>
+                      <AnimatePresence>
                         {isSelected && (
                           <motion.div
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
                             className="mt-2 pt-2 border-t border-slate-600"
                           >
                             <span className={`text-xs px-2 py-1 rounded ${result.badgeClass}`}>
@@ -198,58 +574,206 @@ export default function HowItWorksPage() {
                             </span>
                           </motion.div>
                         )}
-                      </button>
-                    );
-                  })}
-                </div>
+                      </AnimatePresence>
+                    </button>
+                  );
+                })}
               </div>
-            ))}
-          </div>
+            </motion.div>
+          ))}
         </div>
-      </section>
 
-      {/* Technical Specs */}
-      <section className="py-16 px-4 bg-slate-800/50">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-white mb-8 text-center">
+        {/* AI explanation */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={fadeInUp}
+          className="mt-10 md:mt-16 bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-slate-700"
+        >
+          <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6">
+            <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+              <Brain className="w-6 h-6 md:w-7 md:h-7 text-purple-400" />
+            </div>
+            <div className="space-y-2 md:space-y-3">
+              <h3 className="text-lg md:text-xl font-semibold text-white">About our AI</h3>
+              <p className="text-slate-400 text-sm md:text-base leading-relaxed">
+                Abby uses a <strong className="text-white">proprietary language model</strong> - not ChatGPT, not Google, not any third-party AI.
+                Your SMS data never leaves our Australian AWS servers and never trains anyone else&apos;s model.
+                The AI is specifically trained on healthcare appointment language for maximum accuracy in this domain.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function TechnicalSpecsSection() {
+  return (
+    <section className="py-16 md:py-40 px-4">
+      <div className="max-w-5xl mx-auto">
+        {/* Header - no animation wrapper */}
+        <div className="text-center mb-10 md:mb-16">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-heading">
             Technical specifications
           </h2>
+          <p className="text-slate-400 text-lg md:text-xl">
+            The details for those who want them
+          </p>
+        </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {Object.values(specs).map((spec) => (
-              <div key={spec.title} className="bg-slate-800 rounded-2xl p-6 border border-slate-700">
-                <h3 className="text-lg font-semibold text-white mb-4">{spec.title}</h3>
-                <ul className="space-y-2">
-                  {spec.items.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-slate-400 text-sm">
-                      <svg className="w-4 h-4 text-[#5371CA] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+          {Object.values(specs).map((spec, i) => (
+            <motion.div
+              key={spec.title}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={fadeInUp}
+              transition={{ delay: i * 0.05 }}
+              className="bg-slate-800 rounded-2xl p-6 md:p-8 border border-slate-700"
+            >
+              <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[#5371CA]/20 flex items-center justify-center">
+                  <spec.icon className="w-5 h-5 md:w-6 md:h-6 text-[#5371CA]" />
+                </div>
+                <h3 className="text-lg md:text-xl font-semibold text-white">{spec.title}</h3>
               </div>
-            ))}
+              <div className="space-y-3 md:space-y-4">
+                {spec.items.map((item, j) => (
+                  <div key={j} className="flex items-center justify-between gap-2">
+                    <span className="text-slate-400 text-sm md:text-base">{item.label}</span>
+                    <span className="text-white font-medium bg-slate-700/50 px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-sm md:text-base whitespace-nowrap">
+                      {item.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Additional technical notes */}
+        <div className="mt-8 md:mt-12 grid md:grid-cols-2 gap-6 md:gap-8"
+        >
+          <div className="bg-slate-800/50 rounded-2xl p-6 md:p-8 border border-slate-700">
+            <h4 className="text-white font-semibold text-base md:text-lg mb-4 md:mb-6">Data handling</h4>
+            <ul className="space-y-3 md:space-y-4 text-slate-400 text-sm md:text-base">
+              <li className="flex items-start gap-3">
+                <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                SMS content deleted immediately after interpretation
+              </li>
+              <li className="flex items-start gap-3">
+                <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                Appointment IDs purged after 48 hours
+              </li>
+              <li className="flex items-start gap-3">
+                <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                No patient names, phones, or health data stored
+              </li>
+            </ul>
           </div>
+
+          <div className="bg-slate-800/50 rounded-2xl p-6 md:p-8 border border-slate-700">
+            <h4 className="text-white font-semibold text-base md:text-lg mb-4 md:mb-6">Infrastructure</h4>
+            <ul className="space-y-3 md:space-y-4 text-slate-400 text-sm md:text-base">
+              <li className="flex items-start gap-3">
+                <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                Australian AWS servers (Sydney region)
+              </li>
+              <li className="flex items-start gap-3">
+                <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                Encryption at rest and in transit
+              </li>
+              <li className="flex items-start gap-3">
+                <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                HTTPS for all API communications
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function HowItWorksPage() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* Hero */}
+      <section className="py-20 md:py-32 px-4">
+        <div className="max-w-5xl mx-auto text-center">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-8 font-heading"
+          >
+            How Abby works
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-slate-400 text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed"
+          >
+            See exactly what happens at each step - from the manual nightmare you&apos;re escaping to the automated simplicity you&apos;re gaining.
+          </motion.p>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 px-4">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Ready to see it in action?
-          </h2>
-          <p className="text-slate-400 mb-8">
-            Try Abby free for 14 days. No credit card required.
-          </p>
-          <a
-            href="https://app.abby.clinic/login?m=signup"
-            className="inline-block bg-[#5371CA] hover:bg-[#6381d4] text-white font-semibold px-8 py-3 rounded-full transition-colors"
+      {/* The Manual Process (Pain) */}
+      <ManualProcessSection />
+
+      {/* The Abby Journey (Solution) */}
+      <AbbyJourneySection />
+
+      {/* What Abby Understands */}
+      <WhatAbbyUnderstandsSection />
+
+      {/* Technical Specs */}
+      <TechnicalSpecsSection />
+
+      {/* CTA - Full viewport */}
+      <section className="min-h-[100svh] flex items-center justify-center px-4 relative overflow-hidden">
+        {/* Background elements */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900" />
+        <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-[#5371CA]/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/3 right-1/4 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-3xl" />
+
+        <div className="max-w-3xl mx-auto text-center relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="space-y-8"
           >
-            Start your free trial
-          </a>
+            <h2 className="text-4xl md:text-6xl font-bold text-white font-heading">
+              Ready to escape the manual trap?
+            </h2>
+            <p className="text-slate-400 text-xl md:text-2xl max-w-2xl mx-auto">
+              Try Abby free for 14 days. No credit card required.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+              <a
+                href="https://app.abby.clinic/login?m=signup"
+                className="inline-flex items-center justify-center gap-2 bg-[#5371CA] hover:bg-[#6381d4] text-white font-semibold px-10 py-4 rounded-full transition-colors shadow-lg shadow-[#5371CA]/30 text-lg"
+              >
+                Start your free trial
+                <ArrowRight className="w-5 h-5" />
+              </a>
+              <Link
+                href="/pricing"
+                className="inline-flex items-center justify-center text-slate-400 hover:text-white transition-colors px-10 py-4 text-lg"
+              >
+                See pricing →
+              </Link>
+            </div>
+            <p className="text-slate-500 pt-4">
+              Works with Cliniko · Chrome extension included
+            </p>
+          </motion.div>
         </div>
       </section>
     </div>

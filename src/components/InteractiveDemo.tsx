@@ -25,8 +25,8 @@ export function InteractiveDemo() {
 
   return (
     <div className="flex flex-col md:grid md:grid-cols-2 gap-4 md:gap-6 w-full max-w-4xl mx-auto">
-      {/* SMS Panel - First on mobile (order-1), Second on desktop (md:order-2) */}
-      <div className="order-1 md:order-2 bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-slate-700">
+      {/* SMS Panel - Left side on desktop */}
+      <div className="bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-slate-700">
         <div className="bg-slate-700 px-3 py-2.5 md:px-4 md:py-3">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 md:w-10 md:h-10 bg-[#5371CA] rounded-full flex items-center justify-center">
@@ -98,77 +98,79 @@ export function InteractiveDemo() {
         </div>
       </div>
 
-      {/* Calendar Panel - Second on mobile (order-2), First on desktop (md:order-1) */}
-      <div className="order-2 md:order-1 bg-white rounded-2xl shadow-xl overflow-hidden">
-        <div className="bg-gradient-to-r from-[#5371CA] to-teal-700 px-3 py-2.5 md:px-4 md:py-3">
-          <div className="flex items-center justify-between">
-            <span className="text-white font-semibold text-sm md:text-base">Cliniko Calendar</span>
-            <span className="text-teal-100 text-xs md:text-sm">Tuesday, 3 Dec</span>
-          </div>
-        </div>
-
-        <div className="p-3 md:p-4 space-y-2">
-          {/* Context appointment - Confirmed (white) */}
-          <div className="bg-white border-2 border-slate-300 rounded-lg p-2 md:p-2.5 opacity-60">
-            <div className="flex justify-between items-center">
-              <p className="font-medium text-gray-700 text-xs md:text-sm">9:00 AM - Sarah Mitchell</p>
-              <span className="text-[10px] md:text-xs bg-slate-100 text-slate-700 px-1.5 md:px-2 py-0.5 rounded">✓ Confirmed</span>
+      {/* Calendar Panel - Right side on desktop */}
+      <div className="flex flex-col gap-4">
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden flex-1">
+          <div className="bg-gradient-to-r from-[#5371CA] to-teal-700 px-3 py-2.5 md:px-4 md:py-3">
+            <div className="flex items-center justify-between">
+              <span className="text-white font-semibold text-sm md:text-base">Cliniko Calendar</span>
+              <span className="text-teal-100 text-xs md:text-sm">Tuesday, 3 Dec</span>
             </div>
           </div>
 
-          {/* Active appointment */}
-          <motion.div
-            className={`${interpretation.colorClass} border-2 rounded-lg p-3 md:p-4 transition-all duration-500 ${interpretation.hasRedUnderline ? 'border-b-4 border-b-red-500' : ''}`}
-            animate={{
-              scale: smsText && !isProcessing ? 1.01 : 1,
-              boxShadow: smsText && !isProcessing
-                ? '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
-                : '0 0 0 0 rgba(0, 0, 0, 0)'
-            }}
-          >
-            <div className="flex justify-between items-start gap-2">
-              <div className="min-w-0 flex-1">
-                <p className="font-semibold text-gray-800 text-sm md:text-base">10:30 AM - James Cooper</p>
-                <p className="text-xs md:text-sm text-gray-600">Follow-up Appointment</p>
-                <p className="text-[10px] md:text-xs text-gray-500 mt-1">Ph: 021 555 0123</p>
+          <div className="p-3 md:p-4 space-y-3 md:space-y-4">
+            {/* Context appointment - Confirmed (white) */}
+            <div className="bg-white border-2 border-slate-300 rounded-lg p-4 md:p-5 opacity-60">
+              <div className="flex justify-between items-center">
+                <p className="font-medium text-gray-700 text-sm md:text-base">9:00 AM - Sarah Mitchell</p>
+                <span className="text-xs bg-slate-100 text-slate-700 px-2 py-1 rounded">✓ Confirmed</span>
               </div>
-              <div className="flex-shrink-0">
-                {isProcessing ? (
-                  <motion.span
-                    className="text-[10px] md:text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded whitespace-nowrap"
-                    animate={{ opacity: [1, 0.5, 1] }}
-                    transition={{ duration: 0.6, repeat: Infinity }}
+            </div>
+
+            {/* Active appointment */}
+            <motion.div
+              className={`${interpretation.colorClass} border-2 rounded-lg p-4 md:p-5 transition-all duration-500 ${interpretation.hasRedUnderline ? 'border-b-4 border-b-red-500' : ''}`}
+              animate={{
+                scale: smsText && !isProcessing ? 1.01 : 1,
+                boxShadow: smsText && !isProcessing
+                  ? '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
+                  : '0 0 0 0 rgba(0, 0, 0, 0)'
+              }}
+            >
+              <div className="flex justify-between items-start gap-2">
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-gray-800 text-sm md:text-base">10:30 AM - James Cooper</p>
+                  <p className="text-sm text-gray-600">Follow-up Appointment</p>
+                  <p className="text-xs text-gray-500 mt-1">Ph: 021 555 0123</p>
+                </div>
+                <div className="flex-shrink-0">
+                  {isProcessing ? (
+                    <motion.span
+                      className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded whitespace-nowrap"
+                      animate={{ opacity: [1, 0.5, 1] }}
+                      transition={{ duration: 0.6, repeat: Infinity }}
+                    >
+                      Processing...
+                    </motion.span>
+                  ) : (
+                    <span className={`text-xs px-2 py-1 rounded whitespace-nowrap ${interpretation.badgeClass}`}>
+                      {interpretation.icon} {interpretation.label}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <AnimatePresence>
+                {smsText && !isProcessing && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mt-3 pt-3 border-t border-gray-300"
                   >
-                    Processing...
-                  </motion.span>
-                ) : (
-                  <span className={`text-[10px] md:text-xs px-2 py-1 rounded whitespace-nowrap ${interpretation.badgeClass}`}>
-                    {interpretation.icon} {interpretation.label}
-                  </span>
+                    <p className="text-xs text-gray-500 font-medium">SMS Response:</p>
+                    <p className="text-sm text-gray-700 italic break-words">&quot;{smsText}&quot;</p>
+                  </motion.div>
                 )}
+              </AnimatePresence>
+            </motion.div>
+
+            {/* Context appointment - No response yet (coloured/teal) */}
+            <div className="bg-teal-100 border-2 border-[#7b93db] rounded-lg p-4 md:p-5 opacity-60">
+              <div className="flex justify-between items-center">
+                <p className="font-medium text-gray-700 text-sm md:text-base">11:30 AM - Emily Watson</p>
+                <span className="text-xs bg-teal-100 text-teal-700 px-2 py-1 rounded">Awaiting...</span>
               </div>
-            </div>
-
-            <AnimatePresence>
-              {smsText && !isProcessing && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="mt-3 pt-3 border-t border-gray-300"
-                >
-                  <p className="text-[10px] md:text-xs text-gray-500 font-medium">SMS Response:</p>
-                  <p className="text-xs md:text-sm text-gray-700 italic break-words">&quot;{smsText}&quot;</p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-
-          {/* Context appointment - No response yet (coloured/teal) */}
-          <div className="bg-teal-100 border-2 border-[#7b93db] rounded-lg p-2 md:p-2.5 opacity-60">
-            <div className="flex justify-between items-center">
-              <p className="font-medium text-gray-700 text-xs md:text-sm">11:30 AM - Emily Watson</p>
-              <span className="text-[10px] md:text-xs bg-teal-100 text-teal-700 px-1.5 md:px-2 py-0.5 rounded">Awaiting...</span>
             </div>
           </div>
         </div>

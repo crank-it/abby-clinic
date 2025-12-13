@@ -75,184 +75,219 @@ export function AnimatedJourney({ onComplete, loops = 2 }: AnimatedJourneyProps)
     return () => clearTimeout(timer);
   }, [phase, scenarioIndex, loopCount, loops, handleComplete, phaseTimings]);
 
-  // Mobile Layout - Vertical
+  // Mobile Layout - Side by side with interpretive layer below
   if (isMobile) {
     return (
-      <div className="relative w-full flex flex-col items-center gap-4 py-4">
-        {/* Phone */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="w-20 h-36 bg-slate-700 rounded-2xl border-3 border-slate-600 p-1.5 shadow-xl">
-            <div className="w-full h-full bg-slate-800 rounded-xl flex flex-col justify-end p-1.5 overflow-hidden">
-              {/* Outgoing message */}
-              <div className="bg-[#5371CA] rounded-lg rounded-tr-sm p-1.5 mb-1.5 max-w-[95%] self-end">
-                <p className="text-[6px] text-white leading-tight">
-                  Reminder: Appt tomorrow
-                </p>
-              </div>
-
-              {/* Incoming message */}
-              <AnimatePresence>
-                {phase !== 'idle' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8, scale: 0.9 }}
-                    animate={{
-                      opacity: phase === 'sms-appear' ? 1 : 0.5,
-                      y: 0,
-                      scale: 1
-                    }}
-                    className="bg-slate-600 rounded-lg rounded-tl-sm p-1.5 max-w-[95%]"
-                  >
-                    <p className="text-[6px] text-white leading-tight">
-                      {scenario.sms.length > 25 ? scenario.sms.substring(0, 22) + '...' : scenario.sms}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-          <p className="text-slate-500 text-[10px] text-center mt-2">Patient</p>
-        </motion.div>
-
-        {/* Vertical dotted line + traveling particle */}
-        <div className="relative h-16 w-px">
-          <div className="absolute inset-0 border-l-2 border-dashed border-[#6381d4]/20" />
-
-          {/* Traveling Particle - vertical */}
+      <div className="relative w-full h-[400px] px-3" style={{ contain: 'layout' }}>
+        {/* Top Row: Phone (left) and Calendar (right) */}
+        <div className="flex justify-between items-start gap-2 h-[200px]">
+          {/* Phone - Left Side */}
           <motion.div
-            className="absolute left-1/2 -translate-x-1/2"
-            initial={{ top: 0, opacity: 0 }}
-            animate={{
-              top: phase === 'traveling' ? '100%' :
-                   phase === 'processing' ? '100%' :
-                   phase === 'arriving' ? '100%' : 0,
-              opacity: ['traveling', 'processing', 'arriving'].includes(phase) ? 1 : 0,
-              scale: phase === 'processing' ? 1.3 : 1
-            }}
-            transition={{
-              duration: phase === 'traveling' ? 1.0 : 0.3,
-              ease: 'easeInOut'
-            }}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex flex-col items-center"
           >
-            <div className="relative">
-              <div className={`w-4 h-4 rounded-full bg-[#6381d4] shadow-lg shadow-teal-500/50 ${
-                phase === 'processing' ? 'animate-pulse' : ''
-              }`} />
-              <div className="absolute inset-0 bg-teal-400 rounded-full animate-ping opacity-30" />
+            <div className="w-[85px] h-[150px] bg-slate-700 rounded-2xl border-2 border-slate-600 p-1 shadow-xl">
+              <div className="w-full h-full bg-slate-800 rounded-xl flex flex-col justify-end p-1 overflow-hidden">
+                {/* Outgoing message */}
+                <div className="bg-[#5371CA] rounded-md rounded-tr-sm p-1 mb-1 max-w-[95%] self-end">
+                  <p className="text-[5px] text-white leading-tight">
+                    Reminder: Appt tomorrow
+                  </p>
+                </div>
+
+                {/* Incoming message - fixed height container */}
+                <div className="h-[28px] relative">
+                  <AnimatePresence>
+                    {phase !== 'idle' && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 6, scale: 0.9 }}
+                        animate={{
+                          opacity: phase === 'sms-appear' ? 1 : 0.5,
+                          y: 0,
+                          scale: 1
+                        }}
+                        className="absolute inset-x-0 bg-slate-600 rounded-md rounded-tl-sm p-1 max-w-[95%]"
+                      >
+                        <p className="text-[5px] text-white leading-tight">
+                          {scenario.sms.length > 20 ? scenario.sms.substring(0, 18) + '...' : scenario.sms}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
             </div>
+            <p className="text-slate-500 text-[9px] text-center mt-1">Patient</p>
+          </motion.div>
+
+          {/* Calendar - Right Side */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex flex-col items-center"
+          >
+            <div className="w-[140px] bg-white rounded-lg shadow-xl overflow-hidden">
+              <div className="bg-[#5371CA] px-2 py-1">
+                <span className="text-white text-[10px] font-semibold">Calendar</span>
+              </div>
+              <div className="p-1 space-y-0.5">
+                {/* Context appointment - Confirmed (white) */}
+                <div className="bg-white border border-slate-300 rounded p-1 opacity-50">
+                  <p className="text-[8px] text-gray-600 font-medium">9:00 - Sarah M.</p>
+                </div>
+
+                {/* Main appointment */}
+                <motion.div
+                  className={`rounded p-1 border transition-colors duration-500 ${
+                    ['result', 'pause'].includes(phase)
+                      ? `${scenario.calendarClass} ${scenario.hasRedUnderline ? 'border-b-2 border-b-red-500' : ''}`
+                      : 'bg-teal-100 border-[#7b93db]'
+                  }`}
+                  animate={{
+                    scale: ['result', 'pause'].includes(phase) ? 1.02 : 1
+                  }}
+                >
+                  <p className="text-[8px] text-gray-800 font-semibold">10:30 - James C.</p>
+                  <p className="text-[7px] text-gray-500">Follow-up</p>
+                  {/* Status badge - fixed height container */}
+                  <div className="h-[14px] relative">
+                    <AnimatePresence>
+                      {['result', 'pause'].includes(phase) && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 2 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="absolute"
+                        >
+                          <span className={`text-[6px] px-1 py-0.5 rounded ${
+                            scenario.result === 'confirmed'
+                              ? 'bg-slate-100 text-slate-700'
+                              : 'bg-red-100 text-red-700'
+                          }`}>
+                            {scenario.icon} {scenario.label}
+                          </span>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </motion.div>
+
+                {/* Context appointment - No response (teal) */}
+                <div className="bg-teal-100 border border-[#7b93db] rounded p-1 opacity-50">
+                  <p className="text-[8px] text-gray-600 font-medium">11:30 - Emily W.</p>
+                </div>
+              </div>
+            </div>
+            <p className="text-slate-500 text-[9px] text-center mt-1">Your Cliniko</p>
           </motion.div>
         </div>
 
-        {/* AI Processing Indicator */}
-        <AnimatePresence>
-          {phase === 'processing' && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              className="flex flex-col items-center -my-2"
-            >
-              <div className="w-12 h-12 rounded-full bg-slate-700 border-2 border-[#6381d4] flex items-center justify-center shadow-lg shadow-teal-500/20">
-                <span className="text-xl">🧠</span>
-              </div>
-              <motion.span
-                className="text-[#7b93db] text-xs mt-1 font-medium"
-                animate={{ opacity: [1, 0.5, 1] }}
-                transition={{ duration: 0.8, repeat: Infinity }}
-              >
-                Interpreting...
-              </motion.span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Another vertical line */}
-        <div className="relative h-8 w-px">
-          <div className="absolute inset-0 border-l-2 border-dashed border-[#6381d4]/20" />
-        </div>
-
-        {/* Calendar */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+        {/* Connection Lines - SVG overlay */}
+        <svg
+          className="absolute top-[90px] left-0 w-full h-[80px] pointer-events-none"
+          viewBox="0 0 320 80"
+          preserveAspectRatio="xMidYMid meet"
         >
-          <div className="w-40 bg-white rounded-xl shadow-xl overflow-hidden">
-            <div className="bg-[#5371CA] px-2.5 py-1.5">
-              <span className="text-white text-xs font-semibold">Calendar</span>
-            </div>
-            <div className="p-1.5 space-y-1">
-              {/* Context appointment - Confirmed (white) */}
-              <div className="bg-white border border-slate-300 rounded p-1.5 opacity-50">
-                <p className="text-[9px] text-gray-600 font-medium">9:00 - Sarah M.</p>
-              </div>
+          {/* Path from phone to center to calendar */}
+          <path
+            d="M 60 0 L 60 40 L 160 40 L 260 40 L 260 0"
+            fill="none"
+            stroke="rgba(99, 129, 212, 0.3)"
+            strokeWidth="2"
+            strokeDasharray="6 4"
+          />
+          {/* Vertical line down to interpretive layer */}
+          <path
+            d="M 160 40 L 160 80"
+            fill="none"
+            stroke="rgba(99, 129, 212, 0.3)"
+            strokeWidth="2"
+            strokeDasharray="6 4"
+          />
+        </svg>
 
-              {/* Main appointment */}
-              <motion.div
-                className={`rounded p-1.5 border transition-colors duration-500 ${
-                  ['result', 'pause'].includes(phase)
-                    ? `${scenario.calendarClass} ${scenario.hasRedUnderline ? 'border-b-2 border-b-red-500' : ''}`
-                    : 'bg-teal-100 border-[#7b93db]'
-                }`}
-                animate={{
-                  scale: ['result', 'pause'].includes(phase) ? 1.02 : 1
-                }}
-              >
-                <p className="text-[9px] text-gray-800 font-semibold">10:30 - James C.</p>
-                <p className="text-[8px] text-gray-500">Follow-up</p>
-                <AnimatePresence>
-                  {['result', 'pause'].includes(phase) && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 3 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="mt-0.5"
-                    >
-                      <span className={`text-[7px] px-1 py-0.5 rounded ${
-                        scenario.result === 'confirmed'
-                          ? 'bg-slate-100 text-slate-700'
-                          : 'bg-red-100 text-red-700'
-                      }`}>
-                        {scenario.icon} {scenario.label}
-                      </span>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-
-              {/* Context appointment - No response (teal) */}
-              <div className="bg-teal-100 border border-[#7b93db] rounded p-1.5 opacity-50">
-                <p className="text-[9px] text-gray-600 font-medium">11:30 - Emily W.</p>
-              </div>
-            </div>
+        {/* Traveling Particle */}
+        <motion.div
+          className="absolute z-10"
+          style={{ top: '90px' }}
+          initial={{ left: '60px', opacity: 0 }}
+          animate={{
+            left: phase === 'traveling' ? '50%' :
+                  phase === 'processing' ? '50%' :
+                  phase === 'arriving' ? 'calc(100% - 80px)' : '60px',
+            top: phase === 'processing' ? '170px' :
+                 phase === 'arriving' ? '90px' : '130px',
+            opacity: ['traveling', 'processing', 'arriving'].includes(phase) ? 1 : 0,
+            scale: phase === 'processing' ? 1.3 : 1,
+            x: phase === 'traveling' || phase === 'processing' ? '-50%' : '0%'
+          }}
+          transition={{
+            duration: phase === 'traveling' ? 0.8 : 0.4,
+            ease: 'easeInOut'
+          }}
+        >
+          <div className="relative">
+            <div className={`w-3 h-3 rounded-full bg-[#6381d4] shadow-lg shadow-[#6381d4]/50 ${
+              phase === 'processing' ? 'animate-pulse' : ''
+            }`} />
+            <div className="absolute inset-0 bg-[#7b93db] rounded-full animate-ping opacity-30" />
           </div>
-          <p className="text-slate-500 text-[10px] text-center mt-2">Your Cliniko</p>
         </motion.div>
 
-        {/* Current SMS Display */}
-        <AnimatePresence>
-          {phase !== 'idle' && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 5 }}
-              className="mt-2"
-            >
-              <div className="bg-slate-700 rounded-full px-3 py-2 shadow-lg max-w-[280px]">
-                <p className="text-white text-xs text-center">&quot;{scenario.sms}&quot;</p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Interpretive Layer - Full width below */}
+        <div className="absolute bottom-[60px] left-0 right-0 h-[120px] flex flex-col items-center justify-center">
+          {/* AI Processing Indicator */}
+          <div className="relative h-[70px] w-full flex items-center justify-center">
+            <AnimatePresence>
+              {phase === 'processing' && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className="absolute flex flex-col items-center"
+                >
+                  <div className="w-12 h-12 rounded-full bg-slate-700 border-2 border-[#6381d4] flex items-center justify-center shadow-lg shadow-[#6381d4]/20">
+                    <span className="text-xl">🧠</span>
+                  </div>
+                  <motion.span
+                    className="text-[#7b93db] text-xs mt-1 font-medium"
+                    animate={{ opacity: [1, 0.5, 1] }}
+                    transition={{ duration: 0.8, repeat: Infinity }}
+                  >
+                    Interpreting...
+                  </motion.span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
-        {/* Progress Dots */}
-        <div className="flex gap-2 mt-2">
+          {/* Current SMS Display */}
+          <div className="relative h-[40px] w-full flex items-center justify-center">
+            <AnimatePresence>
+              {phase !== 'idle' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 4 }}
+                  className="absolute"
+                >
+                  <div className="bg-slate-700 rounded-full px-3 py-1.5 shadow-lg max-w-[280px]">
+                    <p className="text-white text-[10px] text-center">&quot;{scenario.sms}&quot;</p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Progress Dots - Bottom */}
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
           {journeyScenarios.map((_, i) => (
             <div
               key={i}
-              className={`w-2 h-2 rounded-full transition-colors duration-300 ${
+              className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${
                 i === scenarioIndex ? 'bg-[#6381d4]' : 'bg-slate-600'
               }`}
             />

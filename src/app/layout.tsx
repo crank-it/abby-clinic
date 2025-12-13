@@ -7,19 +7,20 @@ import { Footer } from "@/components/Footer";
 import { QualificationBot } from "@/components/QualificationBot";
 import { TrackingScripts } from "@/components/TrackingScripts";
 
-const openSans = Open_Sans({
+const heading = Montserrat({
   subsets: ["latin"],
-  variable: "--font-open-sans",
+  variable: "--font-heading",
+  weight: ["400", "500", "600", "700"],
 });
 
-const montserrat = Montserrat({
+const body = Open_Sans({
   subsets: ["latin"],
-  variable: "--font-montserrat",
+  variable: "--font-body",
 });
 
-const vollkorn = Vollkorn({
+const accent = Vollkorn({
   subsets: ["latin"],
-  variable: "--font-vollkorn",
+  variable: "--font-accent",
 });
 
 export const metadata: Metadata = {
@@ -48,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           }}
         />
       </head>
-      <body className={`${openSans.variable} ${montserrat.variable} ${vollkorn.variable} font-sans bg-slate-900 text-white antialiased`}>
+      <body className={`${heading.variable} ${body.variable} ${accent.variable} font-body`}>
         <TrackingScripts />
         <Navigation />
         <main className="pt-16">
