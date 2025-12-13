@@ -73,23 +73,12 @@ function JourneyStep({ step, index, isLast }: { step: typeof extensionFlow[0]; i
         {/* Icon */}
         <motion.div
           whileHover={{ scale: 1.05 }}
-          className={`relative flex-shrink-0 w-20 h-20 md:w-28 md:h-28 rounded-3xl ${[1, 2, 3, 4, 5, 6].includes(step.step) ? '' : `bg-gradient-to-br ${config.gradient}`} flex items-center justify-center shadow-2xl ${[1, 2, 3, 4, 5, 6].includes(step.step) ? '' : config.glow}`}
+          className={`relative flex-shrink-0 w-20 h-20 md:w-28 md:h-28 rounded-3xl bg-gradient-to-br ${config.gradient} flex items-center justify-center shadow-2xl ${config.glow}`}
         >
-          {step.step === 1 ? (
-            <img src="/server.png" alt={step.title} className="w-full h-full object-cover rounded-3xl" />
-          ) : step.step === 2 ? (
-            <img src="/hiw2.png" alt={step.title} className="w-full h-full object-cover rounded-3xl" />
-          ) : step.step === 3 ? (
-            <img src="/interpritation.png" alt={step.title} className="w-full h-full object-cover rounded-3xl" />
-          ) : step.step === 4 ? (
-            <img src="/abby-sends.png" alt={step.title} className="w-full h-full object-cover rounded-3xl" />
-          ) : step.step === 5 ? (
-            <img src="/extention.png" alt={step.title} className="w-full h-full object-cover rounded-3xl" />
-          ) : step.step === 6 ? (
-            <img src="/appointments.png" alt={step.title} className="w-full h-full object-cover rounded-3xl" />
-          ) : (
-            config.icon
-          )}
+          {config.icon}
+          <div className="absolute -top-2 -right-2 w-8 h-8 md:w-10 md:h-10 bg-slate-900 border-2 border-slate-700 rounded-full flex items-center justify-center text-sm md:text-lg font-bold text-white">
+            {step.step}
+          </div>
         </motion.div>
 
         {/* Content */}
