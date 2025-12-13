@@ -133,8 +133,8 @@ export default function ContactPage() {
               </p>
 
               <p>
-                We operate <span className="text-white font-medium">Outer Edge</span> as a consultancy here in New Zealand,
-                with <span className="text-white font-medium">Yoonet</span> as our main staple business. And in 2026, we're
+                We operate <a href="https://outeredge.nz" target="_blank" rel="noopener noreferrer" className="text-white font-medium hover:text-[#7b93db] transition-colors">Outer Edge</a> as a consultancy here in New Zealand,
+                with <a href="https://yournet.io" target="_blank" rel="noopener noreferrer" className="text-white font-medium hover:text-[#7b93db] transition-colors">Yoonet</a> as our main staple business. And in 2026, we're
                 launching <span className="text-white font-medium">Allied Flow</span> - a significant product that will transform
                 efficiency and operations, filling critical scarcity gaps for Cliniko users across Australia and New Zealand.
               </p>

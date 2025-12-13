@@ -115,6 +115,19 @@ export function ROICalculator({ currency = 'AUD' }: ROICalculatorProps) {
           </p>
         </div>
 
+        {/* Beyond the money - Staff retention message */}
+        <div className="border-t border-slate-600 pt-6 mb-6 text-center">
+          <h4 className="font-accent text-lg text-white mb-2">
+            Beyond the numbers
+          </h4>
+          <p className="text-slate-400 text-sm leading-relaxed max-w-md mx-auto">
+            Great people are your clinic&apos;s biggest asset—and the hardest to replace. 
+            Abby removes the repetitive, low-value admin work from your best staff, 
+            freeing them for patient care and higher-impact tasks. 
+            That&apos;s value no calculator can measure.
+          </p>
+        </div>
+
         <div className="text-center space-y-3">
           <Link href="/pricing" className="block w-full bg-white hover:bg-gray-100 text-slate-900 font-semibold px-6 md:px-8 py-3 rounded-full transition-colors min-h-[48px]">
             Start saving now - 14 days free
