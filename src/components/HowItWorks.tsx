@@ -1,8 +1,9 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef } from 'react';
 import { extensionFlow, colourCoding } from '@/lib/data';
-import { Smartphone, MessageSquare, Brain, FileText, MousePointer2, Palette } from 'lucide-react';
+import { Smartphone, MessageSquare, Brain, FileText, MousePointer2, Palette, ArrowDown } from 'lucide-react';
 
 // Chrome logo SVG component
 const ChromeLogo = ({ className = "w-8 h-8" }: { className?: string }) => (
@@ -17,255 +18,282 @@ const ChromeLogo = ({ className = "w-8 h-8" }: { className?: string }) => (
   </svg>
 );
 
-// Cliniko-style logo
-const ClinikoLogo = ({ className = "w-8 h-8" }: { className?: string }) => (
-  <div className={`${className} bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center`}>
-    <span className="text-white font-bold text-sm">C</span>
-  </div>
-);
-
-// Map step numbers to Feather icons
-const stepIcons: Record<number, React.ReactNode> = {
-  1: <Smartphone className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
-  2: <MessageSquare className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
-  3: <Brain className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
-  4: <FileText className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
-  5: <MousePointer2 className="w-6 h-6 md:w-7 md:h-7 text-white" />,
-  6: <Palette className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
+// Map step numbers to icons and colors
+const stepConfig: Record<number, { icon: React.ReactNode; gradient: string; glow: string }> = {
+  1: {
+    icon: <Smartphone className="w-8 h-8 md:w-10 md:h-10 text-white" />,
+    gradient: "from-blue-500 to-blue-600",
+    glow: "shadow-blue-500/30"
+  },
+  2: {
+    icon: <MessageSquare className="w-8 h-8 md:w-10 md:h-10 text-white" />,
+    gradient: "from-emerald-500 to-emerald-600",
+    glow: "shadow-emerald-500/30"
+  },
+  3: {
+    icon: <Brain className="w-8 h-8 md:w-10 md:h-10 text-white" />,
+    gradient: "from-purple-500 to-purple-600",
+    glow: "shadow-purple-500/30"
+  },
+  4: {
+    icon: <FileText className="w-8 h-8 md:w-10 md:h-10 text-white" />,
+    gradient: "from-amber-500 to-amber-600",
+    glow: "shadow-amber-500/30"
+  },
+  5: {
+    icon: <MousePointer2 className="w-8 h-8 md:w-10 md:h-10 text-white" />,
+    gradient: "from-[#5371CA] to-[#6381d4]",
+    glow: "shadow-[#5371CA]/30"
+  },
+  6: {
+    icon: <Palette className="w-8 h-8 md:w-10 md:h-10 text-white" />,
+    gradient: "from-pink-500 to-pink-600",
+    glow: "shadow-pink-500/30"
+  },
 };
 
-export function HowItWorks() {
-  return (
-    <section className="py-16 px-4">
-      <div className="max-w-5xl mx-auto">
-        {/* Header with Chrome badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <div className="inline-flex items-center gap-2 bg-slate-800 rounded-full px-4 py-2 mb-6">
-            <ChromeLogo className="w-5 h-5" />
-            <span className="text-slate-300 text-sm font-medium">Chrome Extension</span>
-          </div>
+function JourneyStep({ step, index, isLast }: { step: typeof extensionFlow[0]; index: number; isLast: boolean }) {
+  const config = stepConfig[step.step];
+  const isEven = index % 2 === 0;
 
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-            How the extension works
-          </h2>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-            Abby is a Chrome browser extension that reads patient SMS replies and displays their status directly on your Cliniko calendar.
-          </p>
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: isEven ? -50 : 50 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, amount: 0.5 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="relative"
+    >
+      {/* Connection line to next step */}
+      {!isLast && (
+        <div className="absolute left-1/2 -translate-x-1/2 top-full w-0.5 h-16 md:h-24 bg-gradient-to-b from-slate-600 to-slate-700" />
+      )}
+
+      <div className={`flex flex-col md:flex-row items-center gap-6 md:gap-12 ${isEven ? '' : 'md:flex-row-reverse'}`}>
+        {/* Icon */}
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          className={`relative flex-shrink-0 w-20 h-20 md:w-28 md:h-28 rounded-3xl bg-gradient-to-br ${config.gradient} flex items-center justify-center shadow-2xl ${config.glow}`}
+        >
+          {config.icon}
+          <div className="absolute -top-2 -right-2 w-8 h-8 md:w-10 md:h-10 bg-slate-900 border-2 border-slate-700 rounded-full flex items-center justify-center text-sm md:text-lg font-bold text-white">
+            {step.step}
+          </div>
         </motion.div>
 
-        {/* Flow Diagram - 6 steps in 2 rows */}
-        <div className="relative mb-16">
-          {/* First row: Steps 1-3 (Background process) */}
-          <div className="mb-8">
-            <p className="text-center text-slate-500 text-xs uppercase tracking-wider mb-4">Behind the scenes</p>
-            <div className="grid grid-cols-3 gap-3 md:gap-6 relative">
-              {/* Connection line */}
-              <div className="hidden md:block absolute top-8 left-[20%] right-[20%] h-0.5 bg-gradient-to-r from-slate-700 via-[#5371CA] to-slate-700" />
+        {/* Content */}
+        <div className={`text-center md:text-left ${isEven ? '' : 'md:text-right'} max-w-md`}>
+          <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
+            {step.title}
+          </h3>
+          <p className="text-slate-400 text-base md:text-lg">
+            {step.description}
+          </p>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
 
-              {extensionFlow.slice(0, 3).map((step, i) => (
-                <motion.div
-                  key={step.step}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  viewport={{ once: true }}
-                  className="relative flex flex-col items-center text-center"
-                >
-                  <div className="relative z-10">
-                    <div className="w-14 h-14 md:w-16 md:h-16 bg-slate-800 border-2 border-slate-700 rounded-2xl flex items-center justify-center">
-                      {stepIcons[step.step]}
-                    </div>
-                    <div className="absolute -top-2 -right-2 w-5 h-5 md:w-6 md:h-6 bg-slate-600 rounded-full flex items-center justify-center text-[10px] md:text-xs font-bold text-white">
-                      {step.step}
-                    </div>
-                  </div>
-                  <div className="mt-3">
-                    <h3 className="text-white font-semibold text-sm md:text-base mb-1">{step.title}</h3>
-                    <p className="text-slate-400 text-xs md:text-sm">{step.description}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
+export function HowItWorks() {
+  const containerRef = useRef<HTMLDivElement>(null);
 
-          {/* Divider with arrow */}
-          <div className="flex items-center justify-center my-6">
-            <div className="h-8 w-0.5 bg-gradient-to-b from-slate-700 to-[#5371CA]"></div>
-          </div>
+  return (
+    <section className="py-20 md:py-32 px-4 relative overflow-hidden">
+      {/* Background elements */}
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900" />
+      <div className="absolute top-1/4 left-0 w-96 h-96 bg-[#5371CA]/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
 
-          {/* Second row: Steps 4-6 (User action) */}
-          <div>
-            <p className="text-center text-slate-500 text-xs uppercase tracking-wider mb-4">What you do</p>
-            <div className="grid grid-cols-3 gap-3 md:gap-6 relative">
-              {/* Connection line */}
-              <div className="hidden md:block absolute top-8 left-[20%] right-[20%] h-0.5 bg-gradient-to-r from-[#5371CA] via-[#6381d4] to-[#5371CA]" />
+      <div ref={containerRef} className="max-w-4xl mx-auto relative z-10">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16 md:mb-24"
+        >
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-3 bg-slate-800/80 backdrop-blur-sm rounded-full px-5 py-2.5 mb-8 border border-slate-700"
+          >
+            <ChromeLogo className="w-6 h-6" />
+            <span className="text-slate-300 text-sm font-medium">Chrome Extension</span>
+          </motion.div>
 
-              {extensionFlow.slice(3, 6).map((step, i) => (
-                <motion.div
-                  key={step.step}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: (i + 3) * 0.1 }}
-                  viewport={{ once: true }}
-                  className="relative flex flex-col items-center text-center"
-                >
-                  <div className="relative z-10">
-                    <div className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center ${
-                      step.step === 5
-                        ? 'bg-[#5371CA] border-2 border-[#6381d4]'
-                        : 'bg-slate-800 border-2 border-slate-700'
-                    }`}>
-                      {stepIcons[step.step]}
-                    </div>
-                    <div className={`absolute -top-2 -right-2 w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center text-[10px] md:text-xs font-bold text-white ${
-                      step.step === 5 ? 'bg-[#6381d4]' : 'bg-[#5371CA]'
-                    }`}>
-                      {step.step}
-                    </div>
-                  </div>
-                  <div className="mt-3">
-                    <h3 className={`font-semibold text-sm md:text-base mb-1 ${step.step === 5 ? 'text-[#7b93db]' : 'text-white'}`}>
-                      {step.title}
-                    </h3>
-                    <p className="text-slate-400 text-xs md:text-sm">{step.description}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-heading">
+            How the magic happens
+          </h2>
+          <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+            From patient reply to colour-coded calendar in 6 simple steps
+          </p>
+
+          {/* Scroll indicator */}
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="mt-12"
+          >
+            <ArrowDown className="w-6 h-6 text-slate-500 mx-auto" />
+          </motion.div>
+        </motion.div>
+
+        {/* Journey Steps */}
+        <div className="space-y-16 md:space-y-24">
+          {extensionFlow.map((step, index) => (
+            <JourneyStep
+              key={step.step}
+              step={step}
+              index={index}
+              isLast={index === extensionFlow.length - 1}
+            />
+          ))}
         </div>
 
-        {/* Visual: The Extension Click */}
+        {/* The Result - Visual Demo */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="bg-slate-800/50 rounded-2xl p-6 md:p-8 border border-slate-700 mb-12"
+          className="mt-24 md:mt-32"
         >
-          <h3 className="text-lg font-semibold text-white text-center mb-6">
-            One click reveals everything
-          </h3>
-          <div className="grid md:grid-cols-3 gap-6 items-center">
-            {/* Before - Plain calendar */}
-            <div className="text-center">
-              <div className="w-20 h-20 bg-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-3 overflow-hidden">
-                <div className="grid grid-cols-3 gap-0.5 p-2 w-full h-full">
-                  <div className="bg-teal-200 rounded-sm"></div>
-                  <div className="bg-teal-200 rounded-sm"></div>
-                  <div className="bg-teal-200 rounded-sm"></div>
-                  <div className="bg-teal-200 rounded-sm"></div>
-                  <div className="bg-teal-200 rounded-sm"></div>
-                  <div className="bg-teal-200 rounded-sm"></div>
-                  <div className="bg-teal-200 rounded-sm"></div>
-                  <div className="bg-teal-200 rounded-sm"></div>
-                  <div className="bg-teal-200 rounded-sm"></div>
-                </div>
-              </div>
-              <p className="text-white font-semibold">Your Cliniko calendar</p>
-              <p className="text-slate-400 text-xs">Before clicking</p>
-            </div>
+          <div className="text-center mb-12">
+            <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 font-heading">
+              One click reveals everything
+            </h3>
+            <p className="text-slate-400 text-lg">
+              See exactly who&apos;s coming at a glance
+            </p>
+          </div>
 
-            {/* Click the extension */}
-            <div className="text-center">
-              <div className="flex flex-col items-center gap-2 mb-3">
-                <svg className="w-6 h-6 text-slate-500 rotate-90 md:rotate-0 md:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-slate-700">
+            <div className="grid md:grid-cols-3 gap-8 items-center">
+              {/* Before */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="text-center"
+              >
+                <div className="w-32 h-32 md:w-40 md:h-40 bg-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-4 overflow-hidden">
+                  <div className="grid grid-cols-3 gap-1 p-3 w-full h-full">
+                    {[...Array(9)].map((_, i) => (
+                      <div key={i} className="bg-teal-300/80 rounded-sm" />
+                    ))}
+                  </div>
+                </div>
+                <p className="text-white font-semibold text-lg">Before</p>
+                <p className="text-slate-500 text-sm">Plain Cliniko calendar</p>
+              </motion.div>
+
+              {/* Click action */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="text-center"
+              >
                 <motion.div
-                  className="w-16 h-16 bg-[#1c283c] rounded-2xl flex items-center justify-center cursor-pointer border-slate-700 border-2 hover:bg-[#1e293b]"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  className="w-24 h-24 md:w-28 md:h-28 bg-gradient-to-br from-[#5371CA] to-[#6381d4] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-[#5371CA]/30 cursor-pointer"
                 >
-                  <img src="/abby-extension.svg" alt="Abby Logo" className="w-10 h-10" />
+                  <img src="/abby-extension.svg" alt="Abby" className="w-14 h-14 md:w-16 md:h-16" />
                 </motion.div>
-                <p className="text-[#7b93db] text-sm font-medium">Click here</p>
-              </div>
-              <p className="text-white font-semibold">Abby Extension</p>
-              <p className="text-slate-400 text-xs">In your Chrome toolbar</p>
-            </div>
+                <p className="text-[#7b93db] font-bold text-lg">Click Abby</p>
+                <p className="text-slate-500 text-sm">In your toolbar</p>
+              </motion.div>
 
-            {/* After - Colour coded */}
-            <div className="text-center">
-              <div className="w-20 h-20 bg-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-3 overflow-hidden ring-2 ring-[#5371CA]">
-                <div className="grid grid-cols-3 gap-0.5 p-2 w-full h-full">
-                  <div className="bg-white rounded-sm"></div>
-                  <div className="bg-gray-200 rounded-sm border-b-2 border-b-red-500"></div>
-                  <div className="bg-teal-200 rounded-sm"></div>
-                  <div className="bg-white rounded-sm"></div>
-                  <div className="bg-white rounded-sm"></div>
-                  <div className="bg-gray-200 rounded-sm border-b-2 border-b-red-500"></div>
-                  <div className="bg-teal-200 rounded-sm"></div>
-                  <div className="bg-white rounded-sm"></div>
-                  <div className="bg-teal-200 rounded-sm"></div>
+              {/* After */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4 }}
+                className="text-center"
+              >
+                <div className="w-32 h-32 md:w-40 md:h-40 bg-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-4 overflow-hidden ring-4 ring-[#5371CA]/50">
+                  <div className="grid grid-cols-3 gap-1 p-3 w-full h-full">
+                    <div className="bg-white rounded-sm" />
+                    <div className="bg-gray-300 rounded-sm border-b-2 border-red-500" />
+                    <div className="bg-teal-300/80 rounded-sm" />
+                    <div className="bg-white rounded-sm" />
+                    <div className="bg-white rounded-sm" />
+                    <div className="bg-gray-300 rounded-sm border-b-2 border-red-500" />
+                    <div className="bg-teal-300/80 rounded-sm" />
+                    <div className="bg-white rounded-sm" />
+                    <div className="bg-teal-300/80 rounded-sm" />
+                  </div>
                 </div>
-              </div>
-              <p className="text-white font-semibold">Status revealed</p>
-              <p className="text-slate-400 text-xs">Instantly see who&apos;s coming</p>
+                <p className="text-white font-semibold text-lg">After</p>
+                <p className="text-slate-500 text-sm">Status revealed instantly</p>
+              </motion.div>
             </div>
           </div>
         </motion.div>
 
-        {/* Colour coding legend */}
+        {/* Colour Legend */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          className="mt-16 md:mt-24"
         >
-          <h3 className="text-xl font-bold text-white text-center mb-6">
-            At a glance, you&apos;ll know
+          <h3 className="text-xl md:text-2xl font-bold text-white text-center mb-8 font-heading">
+            What the colours mean
           </h3>
 
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-3 gap-4 md:gap-6">
             {colourCoding.map((item, i) => (
-              <div
+              <motion.div
                 key={i}
-                className={`rounded-xl p-4 border ${item.bgClass} ${item.hasRedUnderline ? 'border-b-4 border-b-red-500' : ''}`}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className={`rounded-2xl p-5 md:p-6 ${item.bgClass} ${item.hasRedUnderline ? 'border-b-4 border-b-red-500' : 'border border-slate-200'}`}
               >
-                <div className="flex items-center gap-2 mb-2">
-                  <span className={`text-base font-bold ${item.textClass}`}>
+                <div className="flex items-center gap-3 mb-3">
+                  <span className={`text-lg font-bold ${item.textClass}`}>
                     {item.status}
                   </span>
                   {item.hasRedUnderline && (
-                    <span className="text-xs bg-red-500 text-white px-2 py-0.5 rounded">Call them</span>
+                    <span className="text-xs bg-red-500 text-white px-2 py-1 rounded-full font-medium">Action needed</span>
                   )}
                 </div>
-                <p className="text-slate-600 text-sm">{item.meaning}</p>
-              </div>
+                <p className="text-slate-600 text-sm leading-relaxed">{item.meaning}</p>
+              </motion.div>
             ))}
           </div>
         </motion.div>
 
         {/* Key points */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-12 bg-slate-800 rounded-xl p-6 border border-slate-700"
+          className="mt-16 md:mt-24 bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-slate-700"
         >
-          <h3 className="text-lg font-semibold text-white mb-4">Good to know</h3>
-          <ul className="space-y-3 text-slate-300">
-            <li className="flex items-start gap-3">
-              <span className="text-[#5371CA] mt-1">•</span>
-              <span><strong className="text-white">Click to reveal:</strong> The extension applies status updates to your calendar whenever you open it.</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-[#5371CA] mt-1">•</span>
-              <span><strong className="text-white">Colours reset:</strong> When you click an appointment, Cliniko refreshes the page. Just click the Abby icon again</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-[#5371CA] mt-1">•</span>
-              <span><strong className="text-white">15-minute cycle:</strong> Abby checks for new responses every 15 minutes, consistent with Cliniko&apos;s update cycle.</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-[#5371CA] mt-1">•</span>
-              <span><strong className="text-white">Read-only:</strong> Abby operates in a read-only capacity and does not send SMS messages. It interprets and displays replies received through your existing Cliniko reminders.</span>
-            </li>
-          </ul>
+          <h3 className="text-xl font-bold text-white mb-6">Good to know</h3>
+          <div className="grid md:grid-cols-2 gap-4 md:gap-6">
+            {[
+              { title: "Click to reveal", desc: "The extension applies colours whenever you click it" },
+              { title: "Colours reset", desc: "Clicking an appointment refreshes Cliniko - just click Abby again" },
+              { title: "15-minute cycle", desc: "Abby checks for new responses every 15 minutes" },
+              { title: "Read-only", desc: "Abby never sends SMS - it only reads and displays replies" },
+            ].map((item, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <div className="w-2 h-2 rounded-full bg-[#5371CA] mt-2 flex-shrink-0" />
+                <div>
+                  <span className="text-white font-semibold">{item.title}:</span>
+                  <span className="text-slate-400 ml-1">{item.desc}</span>
+                </div>
+              </div>
+            ))}
+          </div>
         </motion.div>
       </div>
     </section>

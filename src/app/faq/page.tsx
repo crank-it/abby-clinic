@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FAQAccordion } from '@/components/FAQAccordion';
-import { comprehensiveFAQ, whatAbbyIs, whatAbbyIsNot } from '@/lib/data';
+import { comprehensiveFAQ, whatAbbyIs, whatAbbyIsNot, quickStart } from '@/lib/data';
 import Link from 'next/link';
 import { Wrench, Puzzle, Brain, AlertTriangle, Lock, CreditCard, Check, X } from 'lucide-react';
 
@@ -37,28 +37,64 @@ export default function FAQPage() {
             transition={{ delay: 0.1 }}
             className="text-slate-400 text-lg max-w-2xl mx-auto"
           >
-            Everything you need to know about Abby, the Chrome extension that interprets patient SMS replies for Cliniko.
+            Everything you need to get started and stay running smoothly.
           </motion.p>
+        </div>
+      </section>
+
+      {/* Quick Start Guide */}
+      <section className="px-4 pb-16">
+        <div className="max-w-3xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-slate-800 rounded-2xl p-6 md:p-8 border border-slate-700"
+          >
+            <h2 className="text-xl font-bold text-white mb-6">Quick Start Guide</h2>
+
+            <div className="space-y-6">
+              {quickStart.map((item) => (
+                <div key={item.step} className="flex gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 bg-[#5371CA] rounded-full flex items-center justify-center text-white font-bold text-sm">
+                    {item.step}
+                  </div>
+                  <div>
+                    <h3 className="text-white font-semibold mb-1">{item.title}</h3>
+                    <p className="text-slate-400 text-sm">{item.instruction}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </section>
 
       {/* What Abby Is / Isn't */}
       <section className="px-4 pb-16">
         <div className="max-w-5xl mx-auto">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="text-2xl font-bold text-white mb-6 text-center"
+          >
+            Understanding Abby
+          </motion.h2>
           <div className="grid md:grid-cols-2 gap-6">
             {/* What Abby IS */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
+              transition={{ delay: 0.3 }}
               className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700"
             >
-              <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                 <span className="w-6 h-6 bg-[#5371CA] rounded-full flex items-center justify-center">
                   <Check className="w-3.5 h-3.5 text-white" />
                 </span>
                 Abby IS
-              </h2>
+              </h3>
               <ul className="space-y-3">
                 {whatAbbyIs.map((item, i) => (
                   <li key={i} className="flex items-start gap-3 text-slate-300">
@@ -73,15 +109,15 @@ export default function FAQPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+              transition={{ delay: 0.4 }}
               className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700"
             >
-              <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                 <span className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
                   <X className="w-3.5 h-3.5 text-white" />
                 </span>
                 Abby is NOT
-              </h2>
+              </h3>
               <ul className="space-y-3">
                 {whatAbbyIsNot.map((item, i) => (
                   <li key={i} className="flex items-start gap-3 text-slate-300">
@@ -98,6 +134,14 @@ export default function FAQPage() {
       {/* Category Navigation */}
       <section className="px-4 pb-8">
         <div className="max-w-5xl mx-auto">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-2xl font-bold text-white mb-6 text-center"
+          >
+            Common Questions
+          </motion.h2>
           <div className="flex flex-wrap justify-center gap-2">
             {categories.map((cat) => (
               <button
@@ -208,10 +252,10 @@ export default function FAQPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/support"
+                href="/contact"
                 className="bg-[#5371CA] hover:bg-[#6381d4] text-white font-semibold px-6 py-3 rounded-full transition-colors"
               >
-                Contact Support
+                Get in Touch
               </Link>
               <Link
                 href="/pricing"

@@ -10,7 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/how-it-works',
     '/pricing',
     '/faq',
-    '/support',
+    '/thank-you-cliniko',
     '/legal/privacy',
     '/legal/terms',
   ];

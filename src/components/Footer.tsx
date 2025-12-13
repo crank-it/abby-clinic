@@ -7,6 +7,7 @@ const footerSections = [
     links: [
       { label: "How it works", href: "/how-it-works" },
       { label: "Pricing", href: "/pricing" },
+      { label: "Abby vs.", href: "/abby-vs" },
       { label: "Chrome extension", href: "https://chromewebstore.google.com/detail/abby-for-cliniko/cppckmcdmapbonkfmlfgkhflfjfnhoio", external: true },
       { label: "Cliniko listing", href: "https://www.cliniko.com/connected-apps/abby/", external: true }
     ]
@@ -15,8 +16,9 @@ const footerSections = [
     title: "Company",
     links: [
       { label: "About", href: "/about" },
-      { label: "Support", href: "/support" },
-      { label: "Contact", href: "/support#contact" }
+      { label: "FAQ", href: "/faq" },
+      { label: "Contact", href: "/contact" },
+      { label: "Thank you Cliniko ❤️", href: "/thank-you-cliniko" }
     ]
   },
   {
@@ -33,8 +35,8 @@ export function Footer() {
     <footer className="bg-slate-900 border-t border-slate-800">
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
+          {/* Brand - hidden on mobile to avoid logo doubling */}
+          <div className="hidden md:block md:col-span-1">
             <Link href="/" className="inline-block mb-4">
               <AbbyLogo className="h-9" />
             </Link>
@@ -83,9 +85,8 @@ export function Footer() {
             © 2025 Abby.clinic
           </p>
           <p className="text-slate-600 text-sm text-center mt-2">
-            Powered by Pinot Noir in Otago
+            Made with love in Otago, New Zealand
           </p>
-          <p className="text-center mt-3 text-4xl">🏔️</p>
         </div>
       </div>
     </footer>
