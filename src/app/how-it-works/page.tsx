@@ -1,25 +1,9 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence, useInView } from 'framer-motion';
+import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion';
 import { interpretSMS } from '@/lib/interpretSMS';
 import Link from 'next/link';
-
-// Animation variants that are SSR-safe - content visible by default
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 }
-};
-
-const fadeIn = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 }
-};
-
-const scaleIn = {
-  hidden: { opacity: 0, scale: 0.95 },
-  visible: { opacity: 1, scale: 1 }
-};
 import {
   Smartphone,
   MessageSquare,
@@ -251,7 +235,7 @@ function AnimatedTime({ value, isInView }: { value: number; isInView: boolean })
 
 function ManualProcessSection() {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, amount: 0.3 });
 
   // Calculate total time
   const totalSeconds = 140; // ~2.5 minutes per SMS
@@ -260,18 +244,26 @@ function ManualProcessSection() {
   const hoursPerWeek = Math.round((minutesPerDay * 5) / 60);
 
   return (
-    <section ref={ref} className="py-16 md:py-40 px-4 relative overflow-hidden">
+    <section ref={ref} className="py-28 md:py-40 px-4 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-red-950/20 to-slate-900" />
       <div className="absolute top-1/4 right-0 w-96 h-96 bg-red-500/10 rounded-full blur-3xl" />
 
       <div className="max-w-6xl mx-auto relative z-10">
-        {/* Header - no animation wrapper to ensure content is always visible */}
-        <div className="text-center mb-12 md:mb-20">
-          <div className="inline-flex items-center gap-2 bg-red-500/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-red-500/30">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          className="text-center mb-20"
+        >
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={isInView ? { scale: 1, opacity: 1 } : {}}
+            className="inline-flex items-center gap-2 bg-red-500/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-red-500/30"
+          >
             <AlertTriangle className="w-4 h-4 text-red-400" />
             <span className="text-red-300 text-sm font-medium">The current reality</span>
-          </div>
+          </motion.div>
 
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-heading">
             The manual SMS checking trap
@@ -279,31 +271,29 @@ function ManualProcessSection() {
           <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto">
             Every patient reply triggers the same tedious process. Here&apos;s what your team does dozens of times per day:
           </p>
-        </div>
+        </motion.div>
 
-        {/* Manual steps grid - individual cards animate */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-16 md:mb-24">
+        {/* Manual steps grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
           {manualSteps.map((step, i) => (
             <motion.div
               key={i}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-50px" }}
-              variants={fadeInUp}
-              transition={{ delay: i * 0.05, duration: 0.4 }}
-              className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-slate-700 hover:border-red-500/50 transition-colors group"
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: i * 0.1 }}
+              className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700 hover:border-red-500/50 transition-colors group"
             >
-              <div className="flex flex-col gap-4 md:gap-5">
+              <div className="flex flex-col gap-5">
                 <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-red-500/20 flex items-center justify-center flex-shrink-0 group-hover:bg-red-500/30 transition-colors">
-                    <step.icon className="w-6 h-6 md:w-7 md:h-7 text-red-400" />
+                  <div className="w-14 h-14 rounded-xl bg-red-500/20 flex items-center justify-center flex-shrink-0 group-hover:bg-red-500/30 transition-colors">
+                    <step.icon className="w-7 h-7 text-red-400" />
                   </div>
                   <span className="text-red-400 text-sm font-mono bg-red-500/20 px-3 py-1 rounded-lg">
                     +{step.time}
                   </span>
                 </div>
-                <div className="space-y-2 md:space-y-3">
-                  <h3 className="text-white font-semibold text-base md:text-lg">{step.title}</h3>
+                <div className="space-y-3">
+                  <h3 className="text-white font-semibold text-lg">{step.title}</h3>
                   <p className="text-slate-400 text-sm leading-relaxed">{step.description}</p>
                   <p className="text-red-400/80 text-sm italic">{step.pain}</p>
                 </div>
@@ -314,36 +304,34 @@ function ManualProcessSection() {
 
         {/* Time cost summary */}
         <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          variants={scaleIn}
-          transition={{ duration: 0.5 }}
-          className="bg-gradient-to-r from-red-500/20 via-red-600/20 to-red-500/20 rounded-3xl p-6 md:p-12 border border-red-500/30"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={isInView ? { opacity: 1, scale: 1 } : {}}
+          transition={{ delay: 0.6 }}
+          className="bg-gradient-to-r from-red-500/20 via-red-600/20 to-red-500/20 rounded-3xl p-8 md:p-12 border border-red-500/30"
         >
-          <div className="grid grid-cols-3 gap-4 md:gap-8 text-center">
+          <div className="grid md:grid-cols-3 gap-8 text-center">
             <div>
-              <div className="text-2xl sm:text-4xl md:text-6xl font-bold text-red-400 mb-1 md:mb-2">
+              <div className="text-5xl md:text-6xl font-bold text-red-400 mb-2">
                 ~<AnimatedTime value={Math.round(totalSeconds / 60)} isInView={isInView} />min
               </div>
-              <p className="text-slate-400 text-xs sm:text-sm md:text-base">per SMS reply</p>
+              <p className="text-slate-400">per SMS reply</p>
             </div>
             <div>
-              <div className="text-2xl sm:text-4xl md:text-6xl font-bold text-red-400 mb-1 md:mb-2">
+              <div className="text-5xl md:text-6xl font-bold text-red-400 mb-2">
                 <AnimatedTime value={minutesPerDay} isInView={isInView} />min
               </div>
-              <p className="text-slate-400 text-xs sm:text-sm md:text-base">per day (30 replies)</p>
+              <p className="text-slate-400">per day (30 replies)</p>
             </div>
             <div>
-              <div className="text-2xl sm:text-4xl md:text-6xl font-bold text-red-400 mb-1 md:mb-2">
+              <div className="text-5xl md:text-6xl font-bold text-red-400 mb-2">
                 <AnimatedTime value={hoursPerWeek} isInView={isInView} />hrs
               </div>
-              <p className="text-slate-400 text-xs sm:text-sm md:text-base">per week wasted</p>
+              <p className="text-slate-400">per week wasted</p>
             </div>
           </div>
 
-          <div className="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-red-500/30 text-center">
-            <p className="text-slate-300 text-sm md:text-lg">
+          <div className="mt-8 pt-8 border-t border-red-500/30 text-center">
+            <p className="text-slate-300 text-lg">
               That&apos;s <span className="text-red-400 font-bold">{hoursPerWeek * 52} hours per year</span> spent on a task that adds zero value.
             </p>
           </div>
@@ -362,45 +350,61 @@ function JourneyStep({
   index: number;
   isLast: boolean;
 }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.5 });
   const isEven = index % 2 === 0;
   const Icon = step.icon;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="relative py-6 md:py-8"
+      ref={ref}
+      initial={{ opacity: 0, x: isEven ? -50 : 50 }}
+      animate={isInView ? { opacity: 1, x: 0 } : {}}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="relative py-8"
     >
-      {/* Connection line to next step - hidden on mobile */}
+      {/* Connection line to next step */}
       {!isLast && (
-        <div className="hidden md:block absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-full w-0.5 h-16 bg-gradient-to-b from-slate-600 to-transparent" />
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-full w-0.5 h-16 bg-gradient-to-b from-slate-600 to-transparent" />
       )}
 
-      <div className={`flex flex-col md:flex-row items-center gap-6 md:gap-20 ${isEven ? '' : 'md:flex-row-reverse'}`}>
+      <div className={`flex flex-col md:flex-row items-center gap-10 md:gap-20 ${isEven ? '' : 'md:flex-row-reverse'}`}>
         {/* Icon */}
         <motion.div
           whileHover={{ scale: 1.05 }}
-          className={`relative flex-shrink-0 w-20 h-20 md:w-36 md:h-36 rounded-2xl md:rounded-3xl bg-gradient-to-br ${step.gradient} flex items-center justify-center shadow-2xl ${step.glow} ${step.highlight ? 'ring-4 ring-purple-500/50' : ''}`}
+          className={`relative flex-shrink-0 w-28 h-28 md:w-36 md:h-36 rounded-3xl ${step.step === 1 ? 'bg-white' : [2, 3, 4, 5].includes(step.step) ? '' : `bg-gradient-to-br ${step.gradient}`} flex items-center justify-center shadow-2xl ${[2, 3, 4, 5].includes(step.step) ? '' : step.glow} ${step.highlight ? 'ring-4 ring-purple-500/50' : ''}`}
         >
-          <Icon className="w-10 h-10 md:w-16 md:h-16 text-white" />
+          {step.step === 1 ? (
+            <img src="/cliniko-logo-dark.svg" alt={step.title} className="w-12 h-12 md:w-20 md:h-20" />
+          ) : step.step === 2 ? (
+            <img src="/hiw2.png" alt={step.title} className="w-full h-full object-cover rounded-3xl" />
+          ) : step.step === 3 ? (
+            <img src="/interpritation.png" alt={step.title} className="w-full h-full object-cover rounded-3xl" />
+          ) : step.step === 4 ? (
+            <img src="/abby-sends.png" alt={step.title} className="w-full h-full object-cover rounded-3xl" />
+          ) : step.step === 5 ? (
+            <img src="/extention-sm.png" alt={step.title} className="w-full h-full object-cover rounded-3xl" />
+          ) : step.step === 6 ? (
+            <img src="/cal.png" alt={step.title} className="w-full h-full object-cover rounded-3xl" />
+          ) : (
+            <Icon className="w-12 h-12 md:w-16 md:h-16 text-white" />
+          )}
           {step.highlight && (
             <motion.div
               animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="absolute inset-0 rounded-2xl md:rounded-3xl bg-purple-500/20"
+              className="absolute inset-0 rounded-3xl bg-purple-500/20"
             />
           )}
         </motion.div>
 
         {/* Content */}
-        <div className={`text-center md:text-left ${isEven ? '' : 'md:text-right'} max-w-xl space-y-4 md:space-y-6`}>
-          <div className="space-y-2 md:space-y-4">
-            <h3 className="text-xl md:text-3xl font-bold text-white">
+        <div className={`text-center md:text-left ${isEven ? '' : 'md:text-right'} max-w-xl space-y-6`}>
+          <div className="space-y-4">
+            <h3 className="text-2xl md:text-3xl font-bold text-white">
               {step.title}
             </h3>
-            <p className="text-slate-400 text-base md:text-xl leading-relaxed">
+            <p className="text-slate-400 text-lg md:text-xl leading-relaxed">
               {step.description}
             </p>
           </div>
@@ -417,9 +421,9 @@ function JourneyStep({
             {/* Inner border glow */}
             <div className="absolute -inset-0.5 bg-gradient-to-r from-violet-400 via-fuchsia-300 to-cyan-200 rounded-xl opacity-40" />
             {/* Content box */}
-            <div className="relative flex items-start gap-3 bg-slate-950/95 backdrop-blur-sm rounded-xl px-4 py-4 md:px-6 md:py-5 border border-white/20">
-              <Zap className="w-4 h-4 md:w-5 md:h-5 text-fuchsia-400 mt-0.5 flex-shrink-0" />
-              <p className="text-slate-100 text-xs md:text-sm leading-relaxed">{step.technical}</p>
+            <div className="relative flex items-start gap-3 bg-slate-950/95 backdrop-blur-sm rounded-xl px-6 py-5 border border-white/20">
+              <Zap className="w-5 h-5 text-fuchsia-400 mt-0.5 flex-shrink-0" />
+              <p className="text-slate-100 text-sm leading-relaxed">{step.technical}</p>
             </div>
           </motion.div>
         </div>
@@ -429,20 +433,31 @@ function JourneyStep({
 }
 
 function AbbyJourneySection() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.1 });
+
   return (
-    <section className="py-16 md:py-40 px-4 relative overflow-hidden">
+    <section ref={ref} className="py-28 md:py-40 px-4 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900" />
       <div className="absolute top-1/4 left-0 w-96 h-96 bg-[#5371CA]/10 rounded-full blur-3xl" />
       <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
 
       <div className="max-w-5xl mx-auto relative z-10">
-        {/* Header - no animation wrapper */}
-        <div className="text-center mb-12 md:mb-32">
-          <div className="inline-flex items-center gap-2 bg-emerald-500/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-emerald-500/30">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          className="text-center mb-20 md:mb-32"
+        >
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={isInView ? { scale: 1, opacity: 1 } : {}}
+            className="inline-flex items-center gap-2 bg-emerald-500/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-emerald-500/30"
+          >
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
             <span className="text-emerald-300 text-sm font-medium">With Abby</span>
-          </div>
+          </motion.div>
 
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-heading">
             The automated journey
@@ -451,18 +466,18 @@ function AbbyJourneySection() {
             From patient reply to colour-coded calendar - every step handled automatically
           </p>
 
-          {/* Scroll indicator - hidden on mobile */}
+          {/* Scroll indicator */}
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="mt-12 hidden md:block"
+            className="mt-12"
           >
             <ArrowDown className="w-6 h-6 text-slate-500 mx-auto" />
           </motion.div>
-        </div>
+        </motion.div>
 
         {/* Journey Steps */}
-        <div className="space-y-12 md:space-y-20">
+        <div className="space-y-16 md:space-y-20">
           {abbyJourney.map((step, index) => (
             <JourneyStep
               key={step.step}
@@ -473,42 +488,6 @@ function AbbyJourneySection() {
           ))}
         </div>
 
-        {/* Result comparison */}
-        <div className="mt-20 md:mt-48">
-          <div className="text-center mb-10 md:mb-16">
-            <h3 className="text-2xl md:text-4xl font-bold text-white mb-4 md:mb-6 font-heading">
-              Your new reality
-            </h3>
-            <p className="text-slate-400 text-base md:text-xl max-w-2xl mx-auto leading-relaxed">
-              One click shows you exactly who&apos;s coming. No more communication logs, no hunting through messages, no manual updates.
-            </p>
-          </div>
-
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-20">
-            {/* Stats */}
-            <div className="flex flex-col gap-4 md:gap-6">
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl px-6 md:px-8 py-4 md:py-5 border border-slate-700">
-                <span className="text-emerald-400 font-bold text-3xl md:text-4xl">0</span>
-                <span className="text-slate-400 text-base md:text-lg ml-3">manual checks</span>
-              </div>
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl px-6 md:px-8 py-4 md:py-5 border border-slate-700">
-                <span className="text-emerald-400 font-bold text-3xl md:text-4xl">1</span>
-                <span className="text-slate-400 text-base md:text-lg ml-3">click to see all</span>
-              </div>
-            </div>
-
-            {/* Abby icon - clean, no box */}
-            <motion.div
-              animate={{ scale: [1, 1.05, 1] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="relative"
-            >
-              {/* Glow effect */}
-              <div className="absolute inset-0 bg-[#5371CA]/30 rounded-full blur-2xl scale-150" />
-              <img src="/abby-extension.svg" alt="Abby" className="relative w-16 h-16 md:w-20 md:h-20" />
-            </motion.div>
-          </div>
-        </div>
       </div>
     </section>
   );
@@ -516,30 +495,33 @@ function AbbyJourneySection() {
 
 function WhatAbbyUnderstandsSection() {
   const [selectedExample, setSelectedExample] = useState<string | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.3 });
 
   return (
-    <section className="py-16 md:py-40 px-4 bg-slate-800/50">
+    <section ref={ref} className="py-28 md:py-40 px-4 bg-slate-800/50">
       <div className="max-w-5xl mx-auto">
-        {/* Header - no animation wrapper */}
-        <div className="text-center mb-10 md:mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          className="text-center mb-16"
+        >
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-heading">
             What Abby understands
           </h2>
           <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
             Click any message to see how Abby interprets it. Our AI handles the nuance so you don&apos;t have to.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid md:grid-cols-3 gap-8">
           {examples.map((category, catIndex) => (
             <motion.div
               key={category.category}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-50px" }}
-              variants={fadeInUp}
-              transition={{ delay: catIndex * 0.05 }}
-              className="bg-slate-800 rounded-2xl p-6 md:p-8 border border-slate-700"
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: catIndex * 0.1 }}
+              className="bg-slate-800 rounded-2xl p-8 border border-slate-700"
             >
               <div className="flex items-center gap-3 mb-6">
                 <div className={`w-6 h-6 ${category.colour} ${category.hasRedUnderline ? 'border-b-2 border-b-red-500' : ''} border-2 rounded`} />
@@ -585,19 +567,18 @@ function WhatAbbyUnderstandsSection() {
 
         {/* AI explanation */}
         <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          variants={fadeInUp}
-          className="mt-10 md:mt-16 bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-slate-700"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.4 }}
+          className="mt-16 bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700"
         >
-          <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6">
-            <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-purple-500/20 flex items-center justify-center flex-shrink-0">
-              <Brain className="w-6 h-6 md:w-7 md:h-7 text-purple-400" />
+          <div className="flex items-start gap-6">
+            <div className="w-14 h-14 rounded-xl bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+              <Brain className="w-7 h-7 text-purple-400" />
             </div>
-            <div className="space-y-2 md:space-y-3">
-              <h3 className="text-lg md:text-xl font-semibold text-white">About our AI</h3>
-              <p className="text-slate-400 text-sm md:text-base leading-relaxed">
+            <div className="space-y-3">
+              <h3 className="text-xl font-semibold text-white">About our AI</h3>
+              <p className="text-slate-400 leading-relaxed">
                 Abby uses a <strong className="text-white">proprietary language model</strong> - not ChatGPT, not Google, not any third-party AI.
                 Your SMS data never leaves our Australian AWS servers and never trains anyone else&apos;s model.
                 The AI is specifically trained on healthcare appointment language for maximum accuracy in this domain.
@@ -611,41 +592,45 @@ function WhatAbbyUnderstandsSection() {
 }
 
 function TechnicalSpecsSection() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.3 });
+
   return (
-    <section className="py-16 md:py-40 px-4">
+    <section ref={ref} className="py-28 md:py-40 px-4">
       <div className="max-w-5xl mx-auto">
-        {/* Header - no animation wrapper */}
-        <div className="text-center mb-10 md:mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          className="text-center mb-16"
+        >
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-heading">
             Technical specifications
           </h2>
           <p className="text-slate-400 text-lg md:text-xl">
             The details for those who want them
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid md:grid-cols-3 gap-8">
           {Object.values(specs).map((spec, i) => (
             <motion.div
               key={spec.title}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-50px" }}
-              variants={fadeInUp}
-              transition={{ delay: i * 0.05 }}
-              className="bg-slate-800 rounded-2xl p-6 md:p-8 border border-slate-700"
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: i * 0.1 }}
+              className="bg-slate-800 rounded-2xl p-8 border border-slate-700"
             >
-              <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
-                <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[#5371CA]/20 flex items-center justify-center">
-                  <spec.icon className="w-5 h-5 md:w-6 md:h-6 text-[#5371CA]" />
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-12 h-12 rounded-xl bg-[#5371CA]/20 flex items-center justify-center">
+                  <spec.icon className="w-6 h-6 text-[#5371CA]" />
                 </div>
-                <h3 className="text-lg md:text-xl font-semibold text-white">{spec.title}</h3>
+                <h3 className="text-xl font-semibold text-white">{spec.title}</h3>
               </div>
-              <div className="space-y-3 md:space-y-4">
+              <div className="space-y-4">
                 {spec.items.map((item, j) => (
-                  <div key={j} className="flex items-center justify-between gap-2">
-                    <span className="text-slate-400 text-sm md:text-base">{item.label}</span>
-                    <span className="text-white font-medium bg-slate-700/50 px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-sm md:text-base whitespace-nowrap">
+                  <div key={j} className="flex items-center justify-between">
+                    <span className="text-slate-400">{item.label}</span>
+                    <span className="text-white font-medium bg-slate-700/50 px-3 py-1.5 rounded-lg">
                       {item.value}
                     </span>
                   </div>
@@ -656,44 +641,48 @@ function TechnicalSpecsSection() {
         </div>
 
         {/* Additional technical notes */}
-        <div className="mt-8 md:mt-12 grid md:grid-cols-2 gap-6 md:gap-8"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.4 }}
+          className="mt-12 grid md:grid-cols-2 gap-8"
         >
-          <div className="bg-slate-800/50 rounded-2xl p-6 md:p-8 border border-slate-700">
-            <h4 className="text-white font-semibold text-base md:text-lg mb-4 md:mb-6">Data handling</h4>
-            <ul className="space-y-3 md:space-y-4 text-slate-400 text-sm md:text-base">
+          <div className="bg-slate-800/50 rounded-2xl p-8 border border-slate-700">
+            <h4 className="text-white font-semibold text-lg mb-6">Data handling</h4>
+            <ul className="space-y-4 text-slate-400">
               <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
                 SMS content deleted immediately after interpretation
               </li>
               <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
                 Appointment IDs purged after 48 hours
               </li>
               <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
                 No patient names, phones, or health data stored
               </li>
             </ul>
           </div>
 
-          <div className="bg-slate-800/50 rounded-2xl p-6 md:p-8 border border-slate-700">
-            <h4 className="text-white font-semibold text-base md:text-lg mb-4 md:mb-6">Infrastructure</h4>
-            <ul className="space-y-3 md:space-y-4 text-slate-400 text-sm md:text-base">
+          <div className="bg-slate-800/50 rounded-2xl p-8 border border-slate-700">
+            <h4 className="text-white font-semibold text-lg mb-6">Infrastructure</h4>
+            <ul className="space-y-4 text-slate-400">
               <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
                 Australian AWS servers (Sydney region)
               </li>
               <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
                 Encryption at rest and in transit
               </li>
               <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
                 HTTPS for all API communications
               </li>
             </ul>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
