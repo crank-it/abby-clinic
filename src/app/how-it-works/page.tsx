@@ -383,26 +383,9 @@ function JourneyStep({
           ) : step.step === 4 ? (
             <img src="/abby-sends.png" alt={step.title} className="w-full h-full object-cover rounded-3xl" />
           ) : step.step === 5 ? (
-            <img src="/extention.png" alt={step.title} className="w-full h-full object-cover rounded-3xl" />
+            <img src="/extention-sm.png" alt={step.title} className="w-full h-full object-cover rounded-3xl" />
           ) : step.step === 6 ? (
-            <div className="w-full h-full grid grid-cols-2 gap-1 bg-slate-700 rounded-3xl p-1">
-              {/* Before - plain calendar */}
-              <div className="relative overflow-hidden rounded-xl">
-                <div className="absolute top-1 left-1 bg-slate-900/80 text-white text-[8px] px-1.5 py-0.5 rounded z-10">Before</div>
-                <div className="w-full h-full bg-slate-800 rounded-xl p-1.5">
-                  <div className="grid grid-cols-2 gap-1 h-full">
-                    {[...Array(6)].map((_, i) => (
-                      <div key={i} className="bg-teal-300/80 rounded-sm" />
-                    ))}
-                  </div>
-                </div>
-              </div>
-              {/* After - colored calendar */}
-              <div className="relative overflow-hidden rounded-xl">
-                <div className="absolute top-1 left-1 bg-slate-900/80 text-white text-[8px] px-1.5 py-0.5 rounded z-10">After</div>
-                <img src="/appointments.png" alt={step.title} className="w-full h-full object-cover rounded-xl" />
-              </div>
-            </div>
+            <img src="/cal.png" alt={step.title} className="w-full h-full object-cover rounded-3xl" />
           ) : (
             <Icon className="w-12 h-12 md:w-16 md:h-16 text-white" />
           )}
@@ -505,47 +488,6 @@ function AbbyJourneySection() {
           ))}
         </div>
 
-        {/* Result comparison */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-32 md:mt-48"
-        >
-          <div className="text-center mb-16">
-            <h3 className="text-3xl md:text-4xl font-bold text-white mb-6 font-heading">
-              Your new reality
-            </h3>
-            <p className="text-slate-400 text-xl max-w-2xl mx-auto leading-relaxed">
-              One click shows you exactly who&apos;s coming. No more communication logs, no hunting through messages, no manual updates.
-            </p>
-          </div>
-
-          <div className="flex flex-col md:flex-row items-center justify-center gap-12 md:gap-20">
-            {/* Stats */}
-            <div className="flex flex-col gap-6">
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl px-8 py-5 border border-slate-700">
-                <span className="text-emerald-400 font-bold text-4xl">0</span>
-                <span className="text-slate-400 text-lg ml-3">manual checks</span>
-              </div>
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl px-8 py-5 border border-slate-700">
-                <span className="text-emerald-400 font-bold text-4xl">1</span>
-                <span className="text-slate-400 text-lg ml-3">click to see all</span>
-              </div>
-            </div>
-
-            {/* Abby icon - clean, no box */}
-            <motion.div
-              animate={{ scale: [1, 1.05, 1] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="relative"
-            >
-              {/* Glow effect */}
-              <div className="absolute inset-0 bg-[#5371CA]/30 rounded-full blur-2xl scale-150" />
-              <img src="/abby-extension.svg" alt="Abby" className="relative w-16 h-16 md:w-20 md:h-20" />
-            </motion.div>
-          </div>
-        </motion.div>
       </div>
     </section>
   );
