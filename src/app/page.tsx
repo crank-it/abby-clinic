@@ -9,7 +9,8 @@ import { HowItWorks } from '@/components/HowItWorks';
 import { AnimatedStats } from '@/components/AnimatedStats';
 import { connectSteps } from '@/lib/data';
 import Link from 'next/link';
-import { Key, Brain, MousePointer2, Palette } from 'lucide-react';
+import Image from 'next/image';
+import { Key, Brain, MousePointer2, Palette, Sparkles } from 'lucide-react';
 
 const connectStepIcons: Record<number, React.ReactNode> = {
   0: <Key className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
@@ -18,25 +19,269 @@ const connectStepIcons: Record<number, React.ReactNode> = {
   3: <Palette className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
 };
 
+// Magic sparkles component
+function MagicSparkles({ count = 40 }: { count?: number }) {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {[...Array(count)].map((_, i) => {
+        const size = 2 + Math.random() * 3;
+        const left = Math.random() * 100;
+        const top = Math.random() * 100;
+        const delay = Math.random() * 5;
+        const duration = 2 + Math.random() * 3;
+
+        return (
+          <motion.div
+            key={i}
+            className="absolute rounded-full bg-white"
+            style={{
+              width: size,
+              height: size,
+              left: `${left}%`,
+              top: `${top}%`,
+            }}
+            animate={{
+              opacity: [0, 1, 0],
+              scale: [0, 1, 0],
+            }}
+            transition={{
+              duration,
+              delay,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+// Floating particles
+function FloatingParticles({ count = 15 }: { count?: number }) {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {[...Array(count)].map((_, i) => {
+        const size = 4 + Math.random() * 6;
+        const left = Math.random() * 100;
+        const delay = Math.random() * 10;
+        const duration = 20 + Math.random() * 15;
+
+        return (
+          <motion.div
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              width: size,
+              height: size,
+              left: `${left}%`,
+              background: `radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%)`,
+            }}
+            initial={{ y: '100vh', opacity: 0 }}
+            animate={{
+              y: '-100px',
+              opacity: [0, 0.5, 0.5, 0],
+            }}
+            transition={{
+              duration,
+              delay,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 export default function Home() {
   const [showDemo, setShowDemo] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Magical Aurora Background - Fixed */}
+      <div className="fixed inset-0 -z-10">
+        {/* Base gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950" />
+
+        {/* Aurora layers */}
+        <motion.div
+          className="absolute inset-0"
+          animate={{
+            background: [
+              'radial-gradient(ellipse 80% 50% at 20% 30%, rgba(83, 113, 202, 0.25) 0%, transparent 50%)',
+              'radial-gradient(ellipse 80% 50% at 80% 50%, rgba(83, 113, 202, 0.25) 0%, transparent 50%)',
+              'radial-gradient(ellipse 80% 50% at 40% 40%, rgba(83, 113, 202, 0.25) 0%, transparent 50%)',
+              'radial-gradient(ellipse 80% 50% at 20% 30%, rgba(83, 113, 202, 0.25) 0%, transparent 50%)',
+            ],
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        <motion.div
+          className="absolute inset-0"
+          animate={{
+            background: [
+              'radial-gradient(ellipse 60% 40% at 70% 20%, rgba(147, 51, 234, 0.2) 0%, transparent 50%)',
+              'radial-gradient(ellipse 60% 40% at 30% 60%, rgba(147, 51, 234, 0.2) 0%, transparent 50%)',
+              'radial-gradient(ellipse 60% 40% at 60% 40%, rgba(147, 51, 234, 0.2) 0%, transparent 50%)',
+              'radial-gradient(ellipse 60% 40% at 70% 20%, rgba(147, 51, 234, 0.2) 0%, transparent 50%)',
+            ],
+          }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        />
+
+        <motion.div
+          className="absolute inset-0"
+          animate={{
+            background: [
+              'radial-gradient(ellipse 70% 60% at 50% 70%, rgba(16, 185, 129, 0.12) 0%, transparent 40%)',
+              'radial-gradient(ellipse 70% 60% at 20% 40%, rgba(16, 185, 129, 0.12) 0%, transparent 40%)',
+              'radial-gradient(ellipse 70% 60% at 80% 30%, rgba(16, 185, 129, 0.12) 0%, transparent 40%)',
+              'radial-gradient(ellipse 70% 60% at 50% 70%, rgba(16, 185, 129, 0.12) 0%, transparent 40%)',
+            ],
+          }}
+          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 4 }}
+        />
+
+        <motion.div
+          className="absolute inset-0"
+          animate={{
+            background: [
+              'radial-gradient(ellipse 50% 30% at 30% 50%, rgba(236, 72, 153, 0.1) 0%, transparent 50%)',
+              'radial-gradient(ellipse 50% 30% at 70% 30%, rgba(236, 72, 153, 0.1) 0%, transparent 50%)',
+              'radial-gradient(ellipse 50% 30% at 50% 60%, rgba(236, 72, 153, 0.1) 0%, transparent 50%)',
+              'radial-gradient(ellipse 50% 30% at 30% 50%, rgba(236, 72, 153, 0.1) 0%, transparent 50%)',
+            ],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        />
+
+        {/* Sparkles */}
+        <MagicSparkles count={50} />
+
+        {/* Floating particles */}
+        <FloatingParticles count={20} />
+      </div>
+
       {/* Hero Section */}
-      <section className="py-20 md:py-32 px-4">
+      <section className="relative py-12 sm:py-20 md:py-32 px-4">
+        {/* Floating Robots - Hero */}
+        <motion.div
+          initial={{ opacity: 0, x: -50, rotate: -20 }}
+          animate={{ opacity: 1, x: 0, rotate: -8 }}
+          transition={{ delay: 0.5, type: "spring", stiffness: 100 }}
+          className="hidden lg:block absolute left-4 xl:left-12 top-32 z-20"
+        >
+          <motion.div
+            animate={{ y: [-5, 5, -5], rotate: [-2, 2, -2] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <Image
+              src="/hiw1.png"
+              alt="Abby"
+              width={120}
+              height={120}
+              className="drop-shadow-[0_0_25px_rgba(83,113,202,0.4)]"
+            />
+          </motion.div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 50, rotate: 20 }}
+          animate={{ opacity: 1, x: 0, rotate: 8 }}
+          transition={{ delay: 0.7, type: "spring", stiffness: 100 }}
+          className="hidden lg:block absolute right-4 xl:right-12 top-40 z-20"
+        >
+          <motion.div
+            animate={{ y: [5, -5, 5], rotate: [2, -2, 2] }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <Image
+              src="/hiw2.png"
+              alt="Abby"
+              width={100}
+              height={100}
+              className="drop-shadow-[0_0_25px_rgba(147,51,234,0.4)]"
+            />
+          </motion.div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.9, type: "spring", stiffness: 100 }}
+          className="hidden xl:block absolute left-20 bottom-20 z-20"
+        >
+          <motion.div
+            animate={{ y: [-3, 3, -3], rotate: [-3, 3, -3] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <Image
+              src="/abby-sends.png"
+              alt="Abby"
+              width={90}
+              height={90}
+              className="drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]"
+            />
+          </motion.div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.1, type: "spring", stiffness: 100 }}
+          className="hidden xl:block absolute right-24 bottom-32 z-20"
+        >
+          <motion.div
+            animate={{ y: [3, -3, 3], rotate: [2, -2, 2] }}
+            transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <Image
+              src="/server.png"
+              alt="Abby"
+              width={85}
+              height={85}
+              className="drop-shadow-[0_0_20px_rgba(236,72,153,0.4)]"
+            />
+          </motion.div>
+        </motion.div>
+
         {!showDemo ? (
-          <div className="max-w-5xl mx-auto text-center space-y-10">
+          <div className="max-w-5xl mx-auto text-center space-y-10 relative z-10">
+            {/* Sparkle badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#5371CA]/20 backdrop-blur-sm rounded-full text-[#7b93db] text-sm font-medium border border-[#5371CA]/30"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>AI-powered SMS automation for Cliniko</span>
+            </motion.div>
+
             {/* Header */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
             >
-              <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 font-heading">
-                Stop chasing SMS replies
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 font-heading">
+                Stop chasing{' '}
+                <span className="relative">
+                  <span className="relative z-10 bg-gradient-to-r from-[#5371CA] via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    SMS replies
+                  </span>
+                  <motion.span
+                    className="absolute -inset-1 bg-gradient-to-r from-[#5371CA]/20 via-purple-500/20 to-pink-500/20 blur-lg rounded-lg"
+                    animate={{ opacity: [0.5, 0.8, 0.5] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                </span>
               </h1>
-              <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-                Abby makes Cliniko SMS confirmations a breeze. Let's see it in action
+              <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto">
+                Abby makes Cliniko SMS confirmations a breeze. Let's see it in action.
               </p>
             </motion.div>
 
@@ -44,39 +289,75 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
+              transition={{ delay: 0.4 }}
+              className="relative"
             >
-              <SimpleHeroAnimation />
+              {/* Glow behind animation */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#5371CA]/10 via-purple-500/10 to-[#5371CA]/10 blur-3xl rounded-full scale-75" />
+              <div className="relative">
+                <SimpleHeroAnimation />
+              </div>
             </motion.div>
 
             {/* CTA Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
+              transition={{ delay: 0.5 }}
               className="text-center"
             >
-              <div className="flex justify-center mb-4">
-                <button
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
+                <motion.button
                   onClick={() => setShowDemo(true)}
-                  className="bg-[#5371CA] hover:bg-[#6381d4] text-white font-semibold px-6 py-2.5 rounded-full transition-all shadow-lg shadow-[#5371CA]/30 text-sm"
+                  className="group relative bg-[#5371CA] hover:bg-[#6381d4] text-white font-semibold px-8 py-3 rounded-full transition-all shadow-lg shadow-[#5371CA]/30 text-base overflow-hidden"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  Try it yourself →
-                </button>
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    Try it yourself
+                    <motion.span
+                      animate={{ x: [0, 4, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >
+                      →
+                    </motion.span>
+                  </span>
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-[#6381d4] to-purple-500"
+                    initial={{ x: '-100%' }}
+                    whileHover={{ x: 0 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </motion.button>
+                <Link
+                  href="/pricing"
+                  className="text-slate-400 hover:text-white transition-colors px-6 py-3 border border-slate-700 hover:border-slate-500 rounded-full"
+                >
+                  View pricing
+                </Link>
               </div>
-              <p className="text-slate-500 text-xs">
+              <p className="text-slate-500 text-sm">
                 No credit card required · Works with Cliniko
               </p>
             </motion.div>
           </div>
         ) : (
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-5xl mx-auto relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="space-y-8"
             >
               <div className="text-center">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 200 }}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/20 rounded-full text-emerald-400 text-sm font-medium mb-4"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>Interactive Demo</span>
+                </motion.div>
                 <h2 className="text-xl sm:text-2xl font-bold text-white mb-2 font-heading">
                   Now you try
                 </h2>
@@ -85,10 +366,13 @@ export default function Home() {
                 </p>
               </div>
 
-              <div>
-                <InteractiveDemo />
-                <div className="mt-4">
-                  <Legend />
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-[#5371CA]/10 to-emerald-500/10 blur-3xl rounded-3xl" />
+                <div className="relative bg-slate-900/50 backdrop-blur-sm rounded-3xl p-6 border border-slate-700/50">
+                  <InteractiveDemo />
+                  <div className="mt-4">
+                    <Legend />
+                  </div>
                 </div>
               </div>
 
@@ -106,17 +390,29 @@ export default function Home() {
       </section>
 
       {/* Animated Stats Section */}
-      <AnimatedStats />
+      <div className="relative z-10">
+        <AnimatedStats />
+      </div>
 
       {/* How the Extension Works */}
-      <HowItWorks />
+      <div className="relative z-10">
+        <HowItWorks />
+      </div>
 
       {/* Quick Setup Steps */}
-      <section className="py-16 sm:py-20 px-4 bg-slate-800/50">
+      <section className="relative z-10 py-16 sm:py-20 px-4 bg-slate-900/80 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white text-center mb-12 font-heading">
-            Get started in minutes
-          </h2>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 font-heading">
+              Get started in minutes
+            </h2>
+            <p className="text-slate-400">Four simple steps to automation bliss</p>
+          </motion.div>
 
           {/* Mobile: Vertical list, Desktop: 4 columns */}
           <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:gap-8">
@@ -127,12 +423,15 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
                 viewport={{ once: true }}
-                className="flex md:flex-col items-center md:text-center gap-4 md:gap-0"
+                className="flex md:flex-col items-center md:text-center gap-4 md:gap-0 group"
               >
                 {/* Icon */}
-                <div className="w-14 h-14 md:w-16 md:h-16 bg-slate-700 rounded-2xl flex items-center justify-center md:mb-4">
+                <motion.div
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  className="w-14 h-14 md:w-16 md:h-16 bg-slate-800/80 border border-slate-700/50 rounded-2xl flex items-center justify-center md:mb-4 group-hover:border-[#5371CA]/50 transition-colors"
+                >
                   {connectStepIcons[i]}
-                </div>
+                </motion.div>
 
                 {/* Text content */}
                 <div className="flex-1 md:flex-none">
@@ -146,57 +445,161 @@ export default function Home() {
       </section>
 
       {/* Deep Dive CTA */}
-      <section className="py-16 sm:py-20 px-4">
+      <section className="relative z-10 py-16 sm:py-20 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            className="relative"
           >
+            {/* Floating robot */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, type: "spring" }}
+              className="hidden md:block absolute -right-20 top-0"
+            >
+              <motion.div
+                animate={{ y: [-5, 5, -5], rotate: [-5, 5, -5] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <Image
+                  src="/interpritation.png"
+                  alt="Abby"
+                  width={100}
+                  height={100}
+                  className="drop-shadow-[0_0_20px_rgba(83,113,202,0.4)]"
+                />
+              </motion.div>
+            </motion.div>
+
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 font-heading">
               Sounds pretty cool, hey?
             </h2>
             <p className="text-slate-400 text-base sm:text-lg mb-8">
               Now let&apos;s really get into the weeds of how this life-changing application works.
             </p>
-            <Link
-              href="/how-it-works"
-              className="inline-flex items-center gap-2 bg-slate-700 hover:bg-slate-600 text-white font-semibold px-8 py-3 rounded-full transition-colors"
-            >
-              See how it works →
-            </Link>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+              <Link
+                href="/how-it-works"
+                className="inline-flex items-center gap-2 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 hover:border-slate-600 text-white font-semibold px-8 py-3 rounded-full transition-all"
+              >
+                See how it works
+                <motion.span
+                  animate={{ x: [0, 4, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
+                  →
+                </motion.span>
+              </Link>
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* Final CTA */}
-      <section className="py-16 sm:py-20 px-4 bg-slate-800/50">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 font-heading">
-            Ready to stop manually checking SMS?
-          </h2>
-          <p className="text-slate-400 text-base sm:text-lg mb-8">
-            Join clinics saving hours every week with automated SMS interpretation.
-          </p>
+      <section className="relative z-10 py-16 sm:py-20 px-4">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="relative bg-gradient-to-r from-slate-900/90 via-slate-800/90 to-slate-900/90 backdrop-blur-xl rounded-3xl p-8 md:p-12 border border-slate-700/50 overflow-hidden"
+          >
+            {/* Decorative glow */}
+            <div className="absolute -top-24 -right-24 w-48 h-48 bg-[#5371CA]/20 rounded-full blur-3xl" />
+            <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl" />
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <a
-              href="https://app.abby.clinic/login?m=signup"
-              className="bg-[#5371CA] hover:bg-[#6381d4] text-white font-semibold px-8 py-3 rounded-full transition-colors shadow-lg shadow-[#5371CA]/30"
+            {/* Peeking robots */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="hidden md:block absolute -left-8 top-1/2 -translate-y-1/2"
             >
-              Start your 14-day free trial
-            </a>
-            <Link
-              href="/pricing"
-              className="text-slate-400 hover:text-white transition-colors"
-            >
-              See pricing →
-            </Link>
-          </div>
+              <motion.div
+                animate={{ x: [-3, 3, -3], rotate: [-5, 5, -5] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <Image
+                  src="/hiw1.png"
+                  alt="Abby"
+                  width={80}
+                  height={80}
+                  className="drop-shadow-[0_0_15px_rgba(83,113,202,0.5)]"
+                />
+              </motion.div>
+            </motion.div>
 
-          <p className="text-slate-500 text-sm mt-6">
-            No credit card required · Works with Cliniko
-          </p>
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="hidden md:block absolute -right-8 top-1/2 -translate-y-1/2"
+            >
+              <motion.div
+                animate={{ x: [3, -3, 3], rotate: [5, -5, 5] }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <Image
+                  src="/hiw2.png"
+                  alt="Abby"
+                  width={80}
+                  height={80}
+                  className="drop-shadow-[0_0_15px_rgba(147,51,234,0.5)]"
+                />
+              </motion.div>
+            </motion.div>
+
+            <div className="relative text-center">
+              <motion.div
+                initial={{ scale: 0 }}
+                whileInView={{ scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ type: "spring", stiffness: 200 }}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[#5371CA]/20 rounded-full text-[#7b93db] text-sm font-medium mb-6"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>Start your journey today</span>
+              </motion.div>
+
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 font-heading">
+                Ready to stop manually checking SMS?
+              </h2>
+              <p className="text-slate-400 text-base sm:text-lg mb-8 max-w-2xl mx-auto">
+                Join clinics saving hours every week with automated SMS interpretation.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <motion.a
+                  href="https://app.abby.clinic/login?m=signup"
+                  className="group relative bg-[#5371CA] hover:bg-[#6381d4] text-white font-semibold px-8 py-3 rounded-full transition-all shadow-lg shadow-[#5371CA]/30 overflow-hidden"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <span className="relative z-10">Start your 14-day free trial</span>
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-[#6381d4] to-purple-500"
+                    initial={{ x: '-100%' }}
+                    whileHover={{ x: 0 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </motion.a>
+                <Link
+                  href="/pricing"
+                  className="text-slate-400 hover:text-white transition-colors"
+                >
+                  See pricing →
+                </Link>
+              </div>
+
+              <p className="text-slate-500 text-sm mt-6">
+                No credit card required · Works with Cliniko
+              </p>
+            </div>
+          </motion.div>
         </div>
       </section>
     </div>
