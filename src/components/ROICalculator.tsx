@@ -9,23 +9,29 @@ import { currencies, type CurrencyCode, formatCurrency } from '@/lib/currencies'
 
 interface ROICalculatorProps {
   currency?: CurrencyCode;
+  onCurrencyChange?: (currency: CurrencyCode) => void;
 }
 
-export function ROICalculator({ currency = 'AUD' }: ROICalculatorProps) {
+export function ROICalculator({ currency = 'AUD', onCurrencyChange }: ROICalculatorProps) {
   const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, number | boolean>>({});
+  const [answers, setAnswers] = useState<Record<string, number | boolean | string>>({});
   const [showResults, setShowResults] = useState(false);
   const [notCliniko, setNotCliniko] = useState(false);
 
   const currencyConfig = currencies[currency];
 
-  const handleAnswer = (questionId: string, value: number | boolean) => {
+  const handleAnswer = (questionId: string, value: number | boolean | string) => {
     const newAnswers = { ...answers, [questionId]: value };
     setAnswers(newAnswers);
 
     if (questionId === 'cliniko' && value === false) {
       setNotCliniko(true);
       return;
+    }
+
+    // Handle location selection - update currency
+    if (questionId === 'location' && typeof value === 'string') {
+      onCurrencyChange?.(value as CurrencyCode);
     }
 
     if (step < calculatorQuestions.length - 1) {
