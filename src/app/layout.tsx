@@ -6,6 +6,7 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { QualificationBot } from "@/components/QualificationBot";
 import { TrackingScripts } from "@/components/TrackingScripts";
+import { MobilePageLoader } from "@/components/MobilePageLoader";
 
 const heading = Montserrat({
   subsets: ["latin"],
@@ -54,6 +55,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       </head>
       <body className={`${heading.variable} ${body.variable} ${accent.variable} font-body`}>
         <TrackingScripts />
+        <MobilePageLoader />
         <Navigation />
         <main className="pt-16">
           {children}
