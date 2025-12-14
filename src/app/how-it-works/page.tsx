@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion';
 import { interpretSMS } from '@/lib/interpretSMS';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Smartphone,
   MessageSquare,
@@ -572,10 +573,14 @@ function WhatAbbyUnderstandsSection() {
           transition={{ delay: 0.4 }}
           className="mt-16 bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700"
         >
-          <div className="flex items-start gap-6">
-            <div className="w-14 h-14 rounded-xl bg-purple-500/20 flex items-center justify-center flex-shrink-0">
-              <Brain className="w-7 h-7 text-purple-400" />
-            </div>
+          <div className="flex items-center gap-6">
+            <Image
+              src="/brain.png"
+              alt="Abby AI Brain"
+              width={100}
+              height={100}
+              className="flex-shrink-0"
+            />
             <div className="space-y-3">
               <h3 className="text-xl font-semibold text-white">About our AI</h3>
               <p className="text-slate-400 leading-relaxed">

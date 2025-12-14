@@ -1,28 +1,22 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ROICalculator } from '@/components/ROICalculator';
 import { FAQAccordion } from '@/components/FAQAccordion';
 import { Requirements } from '@/components/Requirements';
-import { currencies, type CurrencyCode, detectCurrency, formatCurrency } from '@/lib/currencies';
+import { currencies, type CurrencyCode, formatCurrency } from '@/lib/currencies';
 import { pricingFAQ, pricingIncluded } from '@/lib/data';
 import Link from 'next/link';
 
 export default function PricingPage() {
   const [currency, setCurrency] = useState<CurrencyCode>('AUD');
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-    setCurrency(detectCurrency());
-  }, []);
+  const handleCurrencyChange = (newCurrency: CurrencyCode) => {
+    setCurrency(newCurrency);
+  };
 
   const currencyConfig = currencies[currency];
-
-  if (!mounted) {
-    return null;
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -34,11 +28,11 @@ export default function PricingPage() {
               Calculate your savings
             </h1>
             <p className="text-slate-400 text-lg max-w-xl mx-auto">
-              Answer 4 quick questions to see how much time and money Abby could save your clinic.
+              Answer 5 quick questions to see how much time and money Abby could save your clinic.
             </p>
           </div>
 
-          <ROICalculator currency={currency} />
+          <ROICalculator currency={currency} onCurrencyChange={handleCurrencyChange} />
         </div>
       </section>
 

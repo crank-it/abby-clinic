@@ -52,6 +52,15 @@ export const calculatorQuestions = [
     exitMessage: "Abby works exclusively with Cliniko. We'd love to support other systems in the future – leave your email and we'll let you know."
   },
   {
+    id: 'location',
+    question: "Where are you located?",
+    options: [
+      { label: "🇦🇺 Australia", value: 'AUD' },
+      { label: "🇳🇿 New Zealand", value: 'NZD' },
+      { label: "🇬🇧 United Kingdom", value: 'GBP' }
+    ]
+  },
+  {
     id: 'appointments',
     question: "Roughly how many appointments does your clinic have per week?",
     options: [

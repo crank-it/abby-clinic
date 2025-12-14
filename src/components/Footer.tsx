@@ -81,12 +81,21 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-12 pt-8 border-t border-slate-800">
-          <p className="text-slate-500 text-sm text-center">
-            © 2025 Abby.clinic
-          </p>
-          <p className="text-slate-600 text-sm text-center mt-2">
-            Made with love in Otago, New Zealand
-          </p>
+          <div className="flex flex-col items-center gap-2 text-slate-500 text-sm">
+            <span>Made over Otago Pinot Noir in</span>
+            <a 
+              href="https://www.dunedinnz.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:opacity-70 transition-opacity"
+            >
+              <img 
+                src="/dunedin.svg" 
+                alt="Dunedin" 
+                className="h-7 opacity-50"
+              />
+            </a>
+          </div>
         </div>
       </div>
     </footer>
