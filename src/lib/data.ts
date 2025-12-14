@@ -471,25 +471,28 @@ export const colourCoding = [
     action: "No action needed",
     bgClass: "bg-white border-slate-300",
     textClass: "text-slate-800",
-    hasRedUnderline: false
+    hasRedUnderline: false,
+    image: "/coming.jpg"
   },
   {
     colour: "Grey + red underline",
-    status: "Needs attention",
+    status: "Cancel/ Needs Attention",
     meaning: "Abby detected a cancellation, reschedule, or something unclear",
     action: "Give them a call",
     bgClass: "bg-gray-100 border-slate-300",
     textClass: "text-slate-800",
-    hasRedUnderline: true
+    hasRedUnderline: true,
+    image: "/cancel-app-new.png"
   },
   {
     colour: "Coloured",
     status: "No reply yet",
     meaning: "They haven't responded—the appointment stays its original colour",
     action: "Chase up if needed",
-    bgClass: "bg-teal-100 border-teal-400",
+    bgClass: "bg-white border-slate-300",
     textClass: "text-slate-800",
-    hasRedUnderline: false
+    hasRedUnderline: false,
+    image: "/unconfirmed-app-new.png"
   }
 ];
 

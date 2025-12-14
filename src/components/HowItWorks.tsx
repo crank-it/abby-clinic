@@ -254,6 +254,16 @@ export function HowItWorks() {
                     {item.status}
                   </span>
                 </div>
+                {item.image && (
+                  <div className="mb-3 rounded-lg overflow-hidden">
+                    <img
+                      src={item.image}
+                      alt={item.status}
+                      loading="lazy"
+                      className="w-full h-auto object-cover"
+                    />
+                  </div>
+                )}
                 <p className="text-slate-600 text-sm leading-relaxed">{item.meaning}</p>
               </motion.div>
             ))}
