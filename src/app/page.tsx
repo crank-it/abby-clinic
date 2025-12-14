@@ -26,12 +26,12 @@ export default function Home() {
       {/* Hero Section - Single Viewport */}
       <section className="h-[100svh] flex flex-col px-4 py-6 overflow-hidden">
         {!showDemo ? (
-          <div className="flex-1 flex flex-col justify-between max-w-lg mx-auto w-full">
+          <div className="flex-1 flex flex-col justify-center gap-6 max-w-lg mx-auto w-full">
             {/* Header */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center pt-2"
+              className="text-center"
             >
               <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2 font-heading">
                 Stop chasing SMS replies
@@ -46,7 +46,6 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="flex-1 flex items-center justify-center py-4"
             >
               <SimpleHeroAnimation />
             </motion.div>
@@ -56,7 +55,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-center pb-2"
+              className="text-center"
             >
               <div className="flex justify-center mb-4">
                 <button
