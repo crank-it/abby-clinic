@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { SimpleHeroAnimation } from '@/components/SimpleHeroAnimation';
 import { InteractiveDemo } from '@/components/InteractiveDemo';
@@ -10,87 +10,111 @@ import { AnimatedStats } from '@/components/AnimatedStats';
 import { connectSteps } from '@/lib/data';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Key, Brain, MousePointer2, Palette, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
-const connectStepIcons: Record<number, React.ReactNode> = {
-  0: <Key className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
-  1: <Brain className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
-  2: <MousePointer2 className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
-  3: <Palette className="w-6 h-6 md:w-7 md:h-7 text-slate-300" />,
+const connectStepImages: Record<number, string> = {
+  0: "/cliniko-logo-light.png",
+  1: "/interpritation.png",
+  2: "/extention.png",
+  3: "/after.png",
 };
 
-// Magic sparkles component
+// Magic sparkles component - only renders on client
 function MagicSparkles({ count = 40 }: { count?: number }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const particles = useMemo(() => {
+    if (!mounted) return [];
+    return [...Array(count)].map((_, i) => ({
+      id: i,
+      size: 2 + Math.random() * 3,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * 5,
+      duration: 2 + Math.random() * 3,
+    }));
+  }, [mounted, count]);
+
+  if (!mounted) return null;
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {[...Array(count)].map((_, i) => {
-        const size = 2 + Math.random() * 3;
-        const left = Math.random() * 100;
-        const top = Math.random() * 100;
-        const delay = Math.random() * 5;
-        const duration = 2 + Math.random() * 3;
-
-        return (
-          <motion.div
-            key={i}
-            className="absolute rounded-full bg-white"
-            style={{
-              width: size,
-              height: size,
-              left: `${left}%`,
-              top: `${top}%`,
-            }}
-            animate={{
-              opacity: [0, 1, 0],
-              scale: [0, 1, 0],
-            }}
-            transition={{
-              duration,
-              delay,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        );
-      })}
+      {particles.map((p) => (
+        <motion.div
+          key={p.id}
+          className="absolute rounded-full bg-white"
+          style={{
+            width: p.size,
+            height: p.size,
+            left: `${p.left}%`,
+            top: `${p.top}%`,
+          }}
+          animate={{
+            opacity: [0, 1, 0],
+            scale: [0, 1, 0],
+          }}
+          transition={{
+            duration: p.duration,
+            delay: p.delay,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
     </div>
   );
 }
 
-// Floating particles
+// Floating particles - only renders on client
 function FloatingParticles({ count = 15 }: { count?: number }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const particles = useMemo(() => {
+    if (!mounted) return [];
+    return [...Array(count)].map((_, i) => ({
+      id: i,
+      size: 4 + Math.random() * 6,
+      left: Math.random() * 100,
+      delay: Math.random() * 10,
+      duration: 20 + Math.random() * 15,
+    }));
+  }, [mounted, count]);
+
+  if (!mounted) return null;
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {[...Array(count)].map((_, i) => {
-        const size = 4 + Math.random() * 6;
-        const left = Math.random() * 100;
-        const delay = Math.random() * 10;
-        const duration = 20 + Math.random() * 15;
-
-        return (
-          <motion.div
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              width: size,
-              height: size,
-              left: `${left}%`,
-              background: `radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%)`,
-            }}
-            initial={{ y: '100vh', opacity: 0 }}
-            animate={{
-              y: '-100px',
-              opacity: [0, 0.5, 0.5, 0],
-            }}
-            transition={{
-              duration,
-              delay,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          />
-        );
-      })}
+      {particles.map((p) => (
+        <motion.div
+          key={p.id}
+          className="absolute rounded-full"
+          style={{
+            width: p.size,
+            height: p.size,
+            left: `${p.left}%`,
+            background: `radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%)`,
+          }}
+          initial={{ y: '100vh', opacity: 0 }}
+          animate={{
+            y: '-100px',
+            opacity: [0, 0.5, 0.5, 0],
+          }}
+          transition={{
+            duration: p.duration,
+            delay: p.delay,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        />
+      ))}
     </div>
   );
 }
@@ -428,9 +452,13 @@ export default function Home() {
                 {/* Icon */}
                 <motion.div
                   whileHover={{ scale: 1.1, rotate: 5 }}
-                  className="w-14 h-14 md:w-16 md:h-16 bg-slate-800/80 border border-slate-700/50 rounded-2xl flex items-center justify-center md:mb-4 group-hover:border-[#5371CA]/50 transition-colors"
+                  className="w-14 h-14 md:w-16 md:h-16 bg-slate-800/80 border border-slate-700/50 rounded-2xl flex items-center justify-center md:mb-4 group-hover:border-[#5371CA]/50 transition-colors overflow-hidden"
                 >
-                  {connectStepIcons[i]}
+                  <img
+                    src={connectStepImages[i]}
+                    alt={step.title}
+                    className="w-full h-full object-cover"
+                  />
                 </motion.div>
 
                 {/* Text content */}
@@ -444,64 +472,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Deep Dive CTA */}
-      <section className="relative z-10 py-16 sm:py-20 px-4">
-        <div className="max-w-3xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="relative"
-          >
-            {/* Floating robot */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3, type: "spring" }}
-              className="hidden md:block absolute -right-20 top-0"
-            >
-              <motion.div
-                animate={{ y: [-5, 5, -5], rotate: [-5, 5, -5] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <Image
-                  src="/interpritation.png"
-                  alt="Abby"
-                  width={100}
-                  height={100}
-                  className="drop-shadow-[0_0_20px_rgba(83,113,202,0.4)]"
-                />
-              </motion.div>
-            </motion.div>
-
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 font-heading">
-              Sounds pretty cool, hey?
-            </h2>
-            <p className="text-slate-400 text-base sm:text-lg mb-8">
-              Now let&apos;s really get into the weeds of how this life-changing application works.
-            </p>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-              <Link
-                href="/how-it-works"
-                className="inline-flex items-center gap-2 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 hover:border-slate-600 text-white font-semibold px-8 py-3 rounded-full transition-all"
-              >
-                See how it works
-                <motion.span
-                  animate={{ x: [0, 4, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                >
-                  →
-                </motion.span>
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
       {/* Final CTA */}
       <section className="relative z-10 py-16 sm:py-20 px-4">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-[75%] md:max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -572,7 +545,13 @@ export default function Home() {
                 Join clinics saving hours every week with automated SMS interpretation.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <div className="flex flex-col gap-4 justify-center items-center">
+                <Link
+                  href="/how-it-works"
+                  className="inline-flex items-center gap-2 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 hover:border-slate-600 text-white font-semibold px-8 py-3 rounded-full transition-all"
+                >
+                  See how it works →
+                </Link>
                 <motion.a
                   href="https://app.abby.clinic/login?m=signup"
                   className="group relative bg-[#5371CA] hover:bg-[#6381d4] text-white font-semibold px-8 py-3 rounded-full transition-all shadow-lg shadow-[#5371CA]/30 overflow-hidden"

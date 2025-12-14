@@ -516,10 +516,10 @@ function JourneyStep({
         {/* Icon */}
         <motion.div
           whileHover={{ scale: 1.05 }}
-          className={`relative flex-shrink-0 w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-2xl sm:rounded-3xl ${step.step === 1 ? 'bg-white' : [2, 3, 4, 5].includes(step.step) ? '' : `bg-gradient-to-br ${step.gradient}`} flex items-center justify-center shadow-2xl ${[2, 3, 4, 5].includes(step.step) ? '' : step.glow} ${step.highlight ? 'ring-4 ring-purple-500/50' : ''}`}
+          className={`relative flex-shrink-0 w-48 h-48 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-2xl sm:rounded-3xl ${step.step === 1 ? 'bg-white' : [2, 3, 4, 5].includes(step.step) ? '' : `bg-gradient-to-br ${step.gradient}`} flex items-center justify-center shadow-2xl ${[2, 3, 4, 5].includes(step.step) ? '' : step.glow} ${step.highlight ? 'ring-4 ring-purple-500/50' : ''}`}
         >
           {step.step === 1 ? (
-            <img src="/cliniko-logo-dark.svg" alt={step.title} className="w-10 h-10 sm:w-12 sm:h-12 md:w-20 md:h-20" />
+            <img src="/cliniko-logo-dark.svg" alt={step.title} className="w-20 h-20 sm:w-12 sm:h-12 md:w-20 md:h-20" />
           ) : step.step === 2 ? (
             <img src="/hiw2.png" alt={step.title} className="w-full h-full object-cover rounded-2xl sm:rounded-3xl" />
           ) : step.step === 3 ? (
@@ -531,7 +531,7 @@ function JourneyStep({
           ) : step.step === 6 ? (
             <img src="/cal.png" alt={step.title} className="w-full h-full object-cover rounded-2xl sm:rounded-3xl" />
           ) : (
-            <Icon className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 text-white" />
+            <Icon className="w-20 h-20 sm:w-12 sm:h-12 md:w-16 md:h-16 text-white" />
           )}
           {step.highlight && (
             <motion.div

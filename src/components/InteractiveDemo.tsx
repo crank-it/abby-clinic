@@ -1,27 +1,152 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { interpretSMS, type InterpretationResult } from '@/lib/interpretSMS';
-import { suggestedResponses } from '@/lib/data';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+
+type ResponseType = 'none' | 'confirmed' | 'cancelled' | 'reschedule' | 'late' | 'unclear';
+
+interface ResponseOption {
+  text: string;
+  type: ResponseType;
+  label: string;
+  icon: string;
+  colorClass: string;
+  badgeClass: string;
+  hasRedUnderline?: boolean;
+}
+
+const responseOptions: ResponseOption[] = [
+  {
+    text: 'Yes, see you then!',
+    type: 'confirmed',
+    label: 'Confirmed',
+    icon: '✓',
+    colorClass: 'bg-white border-slate-300',
+    badgeClass: 'bg-slate-100 text-slate-700',
+  },
+  {
+    text: '👍',
+    type: 'confirmed',
+    label: 'Confirmed',
+    icon: '✓',
+    colorClass: 'bg-white border-slate-300',
+    badgeClass: 'bg-slate-100 text-slate-700',
+  },
+  {
+    text: 'Yep all good',
+    type: 'confirmed',
+    label: 'Confirmed',
+    icon: '✓',
+    colorClass: 'bg-white border-slate-300',
+    badgeClass: 'bg-slate-100 text-slate-700',
+  },
+  {
+    text: 'I need to cancel please',
+    type: 'cancelled',
+    label: 'Cancelled',
+    icon: '✗',
+    colorClass: 'bg-gray-100 border-slate-300',
+    badgeClass: 'bg-red-100 text-red-700',
+    hasRedUnderline: true,
+  },
+  {
+    text: 'Can we reschedule to Thursday?',
+    type: 'reschedule',
+    label: 'Reschedule request',
+    icon: '↻',
+    colorClass: 'bg-gray-100 border-slate-300',
+    badgeClass: 'bg-amber-100 text-amber-700',
+    hasRedUnderline: true,
+  },
+  {
+    text: 'Thanks for the reminder',
+    type: 'confirmed',
+    label: 'Confirmed',
+    icon: '✓',
+    colorClass: 'bg-white border-slate-300',
+    badgeClass: 'bg-slate-100 text-slate-700',
+  },
+  {
+    text: 'Yes but I might be 10 mins late',
+    type: 'late',
+    label: 'Call to discuss',
+    icon: '⚠️',
+    colorClass: 'bg-gray-100 border-slate-300',
+    badgeClass: 'bg-amber-100 text-amber-700',
+    hasRedUnderline: true,
+  },
+  {
+    text: 'Sorry, something came up',
+    type: 'cancelled',
+    label: 'Cancelled',
+    icon: '✗',
+    colorClass: 'bg-gray-100 border-slate-300',
+    badgeClass: 'bg-red-100 text-red-700',
+    hasRedUnderline: true,
+  },
+  {
+    text: 'Can I bring my kid?',
+    type: 'unclear',
+    label: 'Needs review',
+    icon: '?',
+    colorClass: 'bg-gray-100 border-slate-300',
+    badgeClass: 'bg-red-100 text-red-700',
+    hasRedUnderline: true,
+  },
+  {
+    text: 'huh?',
+    type: 'unclear',
+    label: 'Needs review',
+    icon: '?',
+    colorClass: 'bg-gray-100 border-slate-300',
+    badgeClass: 'bg-red-100 text-red-700',
+    hasRedUnderline: true,
+  },
+  {
+    text: 'Perfect, see you tomorrow',
+    type: 'confirmed',
+    label: 'Confirmed',
+    icon: '✓',
+    colorClass: 'bg-white border-slate-300',
+    badgeClass: 'bg-slate-100 text-slate-700',
+  },
+  {
+    text: 'Running late, start without me',
+    type: 'late',
+    label: 'Call to discuss',
+    icon: '⚠️',
+    colorClass: 'bg-gray-100 border-slate-300',
+    badgeClass: 'bg-amber-100 text-amber-700',
+    hasRedUnderline: true,
+  },
+];
+
+const defaultState: ResponseOption = {
+  text: '',
+  type: 'none',
+  label: 'Awaiting...',
+  icon: '',
+  colorClass: 'bg-teal-100 border-[#7b93db]',
+  badgeClass: 'bg-teal-100 text-teal-700',
+};
 
 export function InteractiveDemo() {
-  const [smsText, setSmsText] = useState('');
-  const [interpretation, setInterpretation] = useState<InterpretationResult>(interpretSMS(''));
+  const [selectedResponse, setSelectedResponse] = useState<ResponseOption | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  useEffect(() => {
-    if (smsText) {
-      setIsProcessing(true);
-      const timer = setTimeout(() => {
-        setInterpretation(interpretSMS(smsText));
-        setIsProcessing(false);
-      }, 500);
-      return () => clearTimeout(timer);
-    } else {
-      setInterpretation(interpretSMS(''));
-    }
-  }, [smsText]);
+  const handleSelectResponse = (response: ResponseOption) => {
+    setIsProcessing(true);
+    setTimeout(() => {
+      setSelectedResponse(response);
+      setIsProcessing(false);
+    }, 500);
+  };
+
+  const handleReset = () => {
+    setSelectedResponse(null);
+  };
+
+  const currentState = selectedResponse || defaultState;
 
   return (
     <div className="flex flex-col md:grid md:grid-cols-2 gap-4 md:gap-6 w-full max-w-4xl mx-auto">
@@ -39,7 +164,7 @@ export function InteractiveDemo() {
           </div>
         </div>
 
-        <div className="p-3 md:p-4 space-y-3 md:space-y-4">
+        <div className="p-3 md:p-4 space-y-4 md:space-y-5">
           {/* Outgoing message */}
           <div className="flex justify-end">
             <div className="bg-[#5371CA] text-white rounded-2xl rounded-tr-sm px-3 py-2 md:px-4 md:py-2.5 max-w-[85%]">
@@ -50,51 +175,38 @@ export function InteractiveDemo() {
             </div>
           </div>
 
-          {/* Input area */}
-          <div className="flex justify-start">
-            <div className="bg-slate-600 rounded-2xl rounded-tl-sm px-3 py-2.5 md:px-4 md:py-3 w-full">
-              <textarea
-                value={smsText}
-                onChange={(e) => setSmsText(e.target.value)}
-                placeholder="Type any patient response..."
-                className="w-full bg-transparent text-white placeholder-slate-400 resize-none outline-none text-sm min-h-[50px] md:min-h-[60px]"
-                rows={2}
-              />
-            </div>
-          </div>
-
-          {/* Suggestions - horizontally scrollable on mobile */}
+          {/* Response buttons */}
           <div>
             <p className="text-slate-500 text-xs mb-2 uppercase tracking-wide font-medium">
               Try these:
             </p>
-            <div className="flex gap-2 overflow-x-auto pb-2 -mx-3 px-3 md:mx-0 md:px-0 md:flex-wrap md:overflow-visible scrollbar-hide">
-              {suggestedResponses.map((suggestion, i) => (
+            <div className="flex gap-2 flex-wrap">
+              {responseOptions.map((response, i) => (
                 <button
                   key={i}
-                  onClick={() => setSmsText(suggestion.text)}
-                  className="flex-shrink-0 text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 px-3 py-2 md:py-1.5 rounded-full transition-colors min-h-[40px] md:min-h-0"
+                  onClick={() => handleSelectResponse(response)}
+                  disabled={isProcessing}
+                  className={`text-xs px-3 py-2 md:py-1.5 rounded-full transition-colors min-h-[40px] md:min-h-0 ${
+                    selectedResponse?.text === response.text
+                      ? 'bg-[#5371CA] text-white'
+                      : 'bg-slate-700 hover:bg-slate-600 text-slate-300'
+                  }`}
                 >
-                  {suggestion.text}
+                  {response.text}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Clear button */}
-          <AnimatePresence>
-            {smsText && (
-              <motion.button
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setSmsText('')}
-                className="w-full text-sm text-slate-400 hover:text-white py-3 md:py-2 transition-colors min-h-[44px]"
-              >
-                Clear and try again
-              </motion.button>
-            )}
-          </AnimatePresence>
+          {/* Reset button */}
+          {selectedResponse && (
+            <button
+              onClick={handleReset}
+              className="w-full text-sm text-slate-400 hover:text-white py-2 transition-colors"
+            >
+              Reset demo
+            </button>
+          )}
         </div>
       </div>
 
@@ -119,10 +231,10 @@ export function InteractiveDemo() {
 
             {/* Active appointment */}
             <motion.div
-              className={`${interpretation.colorClass} border-2 rounded-lg p-4 md:p-5 transition-all duration-500 ${interpretation.hasRedUnderline ? 'border-b-4 border-b-red-500' : ''}`}
+              className={`${currentState.colorClass} border-2 rounded-lg p-4 md:p-5 transition-all duration-500 ${currentState.hasRedUnderline ? 'border-b-4 border-b-red-500' : ''}`}
               animate={{
-                scale: smsText && !isProcessing ? 1.01 : 1,
-                boxShadow: smsText && !isProcessing
+                scale: selectedResponse && !isProcessing ? 1.01 : 1,
+                boxShadow: selectedResponse && !isProcessing
                   ? '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
                   : '0 0 0 0 rgba(0, 0, 0, 0)'
               }}
@@ -143,26 +255,23 @@ export function InteractiveDemo() {
                       Processing...
                     </motion.span>
                   ) : (
-                    <span className={`text-xs px-2 py-1 rounded whitespace-nowrap ${interpretation.badgeClass}`}>
-                      {interpretation.icon} {interpretation.label}
+                    <span className={`text-xs px-2 py-1 rounded whitespace-nowrap ${currentState.badgeClass}`}>
+                      {currentState.icon} {currentState.label}
                     </span>
                   )}
                 </div>
               </div>
 
-              <AnimatePresence>
-                {smsText && !isProcessing && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="mt-3 pt-3 border-t border-gray-300"
-                  >
-                    <p className="text-xs text-gray-500 font-medium">SMS Response:</p>
-                    <p className="text-sm text-gray-700 italic break-words">&quot;{smsText}&quot;</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {selectedResponse && !isProcessing && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  className="mt-3 pt-3 border-t border-gray-300"
+                >
+                  <p className="text-xs text-gray-500 font-medium">SMS Response:</p>
+                  <p className="text-sm text-gray-700 italic break-words">&quot;{selectedResponse.text}&quot;</p>
+                </motion.div>
+              )}
             </motion.div>
 
             {/* Context appointment - No response yet (coloured/teal) */}

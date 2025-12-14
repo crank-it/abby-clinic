@@ -467,6 +467,7 @@ export const colourCoding = [
   {
     colour: "White",
     status: "They're coming",
+    subtitle: "Appointment turns white",
     meaning: "Abby has interpreted their reply as a confirmation",
     action: "No action needed",
     bgClass: "bg-white border-slate-300",
@@ -477,6 +478,7 @@ export const colourCoding = [
   {
     colour: "Grey + red underline",
     status: "Cancel/ Needs Attention",
+    subtitle: "Appointment grey with red underline",
     meaning: "Abby detected a cancellation, reschedule, or something unclear",
     action: "Give them a call",
     bgClass: "bg-gray-100 border-slate-300",
@@ -487,6 +489,7 @@ export const colourCoding = [
   {
     colour: "Coloured",
     status: "No reply yet",
+    subtitle: "Appointment colour does not change",
     meaning: "They haven't responded—the appointment stays its original colour",
     action: "Chase up if needed",
     bgClass: "bg-white border-slate-300",

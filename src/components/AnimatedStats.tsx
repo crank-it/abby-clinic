@@ -117,7 +117,7 @@ function StatSection({ stat, index }: { stat: StatConfig; index: number }) {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-[7rem] sm:text-[12rem] md:text-[8rem] lg:text-[10rem] xl:text-[13rem] font-bold font-heading leading-none"
+          className="text-[4rem] sm:text-[5rem] md:text-[8rem] lg:text-[10rem] xl:text-[13rem] font-bold font-heading leading-none max-w-[60%] md:max-w-none mx-auto"
         >
           <AnimatedNumber
             value={stat.value}

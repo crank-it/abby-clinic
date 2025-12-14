@@ -17,82 +17,94 @@ const trustSignalIcons: Record<string, React.ReactNode> = {
 
 // Magic sparkles component - reduced for mobile
 function MagicSparkles({ count = 40, isMobile = false }: { count?: number; isMobile?: boolean }) {
-  // Much fewer particles on mobile
-  const actualCount = isMobile ? Math.min(count, 12) : count;
+  const [particles, setParticles] = useState<Array<{size: number; left: number; top: number; delay: number; duration: number}>>([]);
+
+  useEffect(() => {
+    const actualCount = isMobile ? Math.min(count, 12) : count;
+    setParticles(
+      [...Array(actualCount)].map(() => ({
+        size: 2 + Math.random() * 3,
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        delay: Math.random() * 5,
+        duration: 2 + Math.random() * 3,
+      }))
+    );
+  }, [count, isMobile]);
+
+  if (particles.length === 0) return null;
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {[...Array(actualCount)].map((_, i) => {
-        const size = 2 + Math.random() * 3;
-        const left = Math.random() * 100;
-        const top = Math.random() * 100;
-        const delay = Math.random() * 5;
-        const duration = 2 + Math.random() * 3;
-
-        return (
-          <motion.div
-            key={i}
-            className="absolute rounded-full bg-white"
-            style={{
-              width: size,
-              height: size,
-              left: `${left}%`,
-              top: `${top}%`,
-            }}
-            animate={{
-              opacity: [0, 1, 0],
-              scale: [0, 1, 0],
-            }}
-            transition={{
-              duration,
-              delay,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        );
-      })}
+      {particles.map((p, i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-full bg-white"
+          style={{
+            width: p.size,
+            height: p.size,
+            left: `${p.left}%`,
+            top: `${p.top}%`,
+          }}
+          animate={{
+            opacity: [0, 1, 0],
+            scale: [0, 1, 0],
+          }}
+          transition={{
+            duration: p.duration,
+            delay: p.delay,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
     </div>
   );
 }
 
 // Floating particles - reduced for mobile
 function FloatingParticles({ count = 15, isMobile = false }: { count?: number; isMobile?: boolean }) {
-  // Much fewer particles on mobile
-  const actualCount = isMobile ? Math.min(count, 5) : count;
+  const [particles, setParticles] = useState<Array<{size: number; left: number; delay: number; duration: number}>>([]);
+
+  useEffect(() => {
+    const actualCount = isMobile ? Math.min(count, 5) : count;
+    setParticles(
+      [...Array(actualCount)].map(() => ({
+        size: 4 + Math.random() * 6,
+        left: Math.random() * 100,
+        delay: Math.random() * 10,
+        duration: 20 + Math.random() * 15,
+      }))
+    );
+  }, [count, isMobile]);
+
+  if (particles.length === 0) return null;
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {[...Array(actualCount)].map((_, i) => {
-        const size = 4 + Math.random() * 6;
-        const left = Math.random() * 100;
-        const delay = Math.random() * 10;
-        const duration = 20 + Math.random() * 15;
-
-        return (
-          <motion.div
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              width: size,
-              height: size,
-              left: `${left}%`,
-              background: `radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%)`,
-            }}
-            initial={{ y: '100vh', opacity: 0 }}
-            animate={{
-              y: '-100px',
-              opacity: [0, 0.5, 0.5, 0],
-            }}
-            transition={{
-              duration,
-              delay,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          />
-        );
-      })}
+      {particles.map((p, i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-full"
+          style={{
+            width: p.size,
+            height: p.size,
+            left: `${p.left}%`,
+            background: `radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%)`,
+          }}
+          initial={{ y: '100vh', opacity: 0 }}
+          animate={{
+            y: '-100px',
+            opacity: [0, 0.5, 0.5, 0],
+          }}
+          transition={{
+            duration: p.duration,
+            delay: p.delay,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        />
+      ))}
     </div>
   );
 }

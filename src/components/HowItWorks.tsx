@@ -249,10 +249,13 @@ export function HowItWorks() {
                 transition={{ delay: i * 0.1 }}
                 className={`rounded-2xl p-5 md:p-6 ${item.bgClass} ${item.hasRedUnderline ? 'border-b-4 border-b-red-500' : 'border border-slate-200'}`}
               >
-                <div className="flex items-center gap-3 mb-3">
+                <div className="mb-3">
                   <span className={`text-lg font-bold ${item.textClass}`}>
                     {item.status}
                   </span>
+                  {item.subtitle && (
+                    <p className="text-slate-500 text-xs mt-1">{item.subtitle}</p>
+                  )}
                 </div>
                 {item.image && (
                   <div className="mb-3 rounded-lg overflow-hidden">
@@ -277,7 +280,10 @@ export function HowItWorks() {
           viewport={{ once: true }}
           className="mt-16 md:mt-24 bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-slate-700"
         >
-          <h3 className="text-xl font-bold text-white mb-6">Good to know</h3>
+          <div className="flex flex-col items-center mb-6">
+            <img src="/abby-logo-transparent.png" alt="Abby" className="w-48 object-contain mb-3" />
+            <h3 className="text-xl font-bold text-white">Fun Facts about Abby</h3>
+          </div>
           <div className="grid md:grid-cols-2 gap-4 md:gap-6">
             {[
               { title: "Click to reveal", desc: "The extension applies colours whenever you click it" },
