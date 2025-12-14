@@ -27,6 +27,9 @@ export const metadata: Metadata = {
   title: "Abby | AI SMS confirmation for Cliniko",
   description: "Stop manually checking appointment SMS replies. Abby interprets patient responses and updates your Cliniko calendar automatically.",
   keywords: "cliniko, sms, appointment confirmation, ai, automation, healthcare",
+  icons: {
+    icon: "/abby-extension.svg",
+  },
 };
 
 export default function RootLayout({
