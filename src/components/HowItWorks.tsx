@@ -189,14 +189,10 @@ export function HowItWorks() {
                 className="text-center"
               >
                 <div className="w-32 h-32 md:w-40 md:h-40 bg-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-4 overflow-hidden">
-                  <div className="grid grid-cols-3 gap-1 p-3 w-full h-full">
-                    {[...Array(9)].map((_, i) => (
-                      <div key={i} className="bg-teal-300/80 rounded-sm" />
-                    ))}
-                  </div>
+                  <img src="/before.png" alt="Standard calendar view" className="w-full h-full object-cover" />
                 </div>
                 <p className="text-white font-semibold text-lg">Before</p>
-                <p className="text-slate-500 text-sm">Plain Cliniko calendar</p>
+                <p className="text-slate-500 text-sm">Standard View</p>
               </motion.div>
 
               {/* Click action */}
@@ -207,13 +203,9 @@ export function HowItWorks() {
                 transition={{ delay: 0.2 }}
                 className="text-center"
               >
-                <motion.div
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="w-24 h-24 md:w-28 md:h-28 bg-gradient-to-br from-[#5371CA] to-[#6381d4] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-[#5371CA]/30 cursor-pointer"
-                >
-                  <img src="/abby-extension.svg" alt="Abby" className="w-14 h-14 md:w-16 md:h-16" />
-                </motion.div>
+                <div className="w-24 h-24 md:w-28 md:h-28 bg-gradient-to-br from-[#5371CA] to-[#6381d4] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-[#5371CA]/30 overflow-hidden">
+                  <img src="/extension-popup.png" alt="Abby Extension" className="w-full h-full object-cover" />
+                </div>
                 <p className="text-[#7b93db] font-bold text-lg">Click Abby</p>
                 <p className="text-slate-500 text-sm">In your toolbar</p>
               </motion.div>
@@ -227,17 +219,7 @@ export function HowItWorks() {
                 className="text-center"
               >
                 <div className="w-32 h-32 md:w-40 md:h-40 bg-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-4 overflow-hidden ring-4 ring-[#5371CA]/50">
-                  <div className="grid grid-cols-3 gap-1 p-3 w-full h-full">
-                    <div className="bg-white rounded-sm" />
-                    <div className="bg-gray-300 rounded-sm border-b-2 border-red-500" />
-                    <div className="bg-teal-300/80 rounded-sm" />
-                    <div className="bg-white rounded-sm" />
-                    <div className="bg-white rounded-sm" />
-                    <div className="bg-gray-300 rounded-sm border-b-2 border-red-500" />
-                    <div className="bg-teal-300/80 rounded-sm" />
-                    <div className="bg-white rounded-sm" />
-                    <div className="bg-teal-300/80 rounded-sm" />
-                  </div>
+                  <img src="/after.png" alt="Colour-coded calendar view" className="w-full h-full object-cover" />
                 </div>
                 <p className="text-white font-semibold text-lg">After</p>
                 <p className="text-slate-500 text-sm">Status revealed instantly</p>
@@ -271,10 +253,17 @@ export function HowItWorks() {
                   <span className={`text-lg font-bold ${item.textClass}`}>
                     {item.status}
                   </span>
-                  {item.hasRedUnderline && (
-                    <span className="text-xs bg-red-500 text-white px-2 py-1 rounded-full font-medium">Action needed</span>
-                  )}
                 </div>
+                {item.image && (
+                  <div className="mb-3 rounded-lg overflow-hidden">
+                    <img
+                      src={item.image}
+                      alt={item.status}
+                      loading="lazy"
+                      className="w-full h-auto object-cover"
+                    />
+                  </div>
+                )}
                 <p className="text-slate-600 text-sm leading-relaxed">{item.meaning}</p>
               </motion.div>
             ))}

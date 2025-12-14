@@ -23,38 +23,37 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Hero Section - Single Viewport */}
-      <section className="h-[100svh] flex flex-col px-4 py-6 overflow-hidden">
+      {/* Hero Section */}
+      <section className="py-20 md:py-32 px-4">
         {!showDemo ? (
-          <div className="flex-1 flex flex-col justify-center gap-6 max-w-lg mx-auto w-full">
+          <div className="max-w-5xl mx-auto text-center space-y-10">
             {/* Header */}
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center"
             >
-              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2 font-heading">
+              <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 font-heading">
                 Stop chasing SMS replies
               </h1>
-              <p className="text-slate-400 text-sm sm:text-base">
+              <p className="text-slate-400 text-lg max-w-2xl mx-auto">
                 Abby makes Cliniko SMS confirmations a breeze. Let's see it in action
               </p>
             </motion.div>
 
             {/* Animation */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
             >
               <SimpleHeroAnimation />
             </motion.div>
 
             {/* CTA Section */}
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+              transition={{ delay: 0.2 }}
               className="text-center"
             >
               <div className="flex justify-center mb-4">
@@ -71,36 +70,38 @@ export default function Home() {
             </motion.div>
           </div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex-1 flex flex-col max-w-5xl mx-auto w-full"
-          >
-            <div className="text-center mb-4">
-              <h2 className="text-xl sm:text-2xl font-bold text-white mb-2 font-heading">
-                Now you try
-              </h2>
-              <p className="text-slate-400 text-sm">
-                Type any response and watch your calendar update
-              </p>
-            </div>
-
-            <div className="flex-1 overflow-auto">
-              <InteractiveDemo />
-              <div className="mt-4">
-                <Legend />
+          <div className="max-w-5xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-8"
+            >
+              <div className="text-center">
+                <h2 className="text-xl sm:text-2xl font-bold text-white mb-2 font-heading">
+                  Now you try
+                </h2>
+                <p className="text-slate-400 text-sm">
+                  Type any response and watch your calendar update
+                </p>
               </div>
-            </div>
 
-            <div className="text-center py-4">
-              <button
-                onClick={() => setShowDemo(false)}
-                className="text-slate-500 hover:text-slate-300 text-sm transition-colors"
-              >
-                ← Back to animation
-              </button>
-            </div>
-          </motion.div>
+              <div>
+                <InteractiveDemo />
+                <div className="mt-4">
+                  <Legend />
+                </div>
+              </div>
+
+              <div className="text-center py-4">
+                <button
+                  onClick={() => setShowDemo(false)}
+                  className="text-slate-500 hover:text-slate-300 text-sm transition-colors"
+                >
+                  ← Back to animation
+                </button>
+              </div>
+            </motion.div>
+          </div>
         )}
       </section>
 
