@@ -37,13 +37,18 @@ export function Navigation() {
     };
   }, [mobileMenuOpen]);
 
+  // Scroll to top handler
+  const handleNavClick = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  };
+
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href="/" className="flex items-center">
+            <Link href="/" onClick={handleNavClick} className="flex items-center">
               <AbbyLogo className="h-9" />
             </Link>
 
@@ -53,6 +58,7 @@ export function Navigation() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={handleNavClick}
                   className="text-slate-300 hover:text-white transition-colors text-sm"
                 >
                   {item.label}
@@ -147,7 +153,10 @@ export function Navigation() {
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
+                      onClick={() => {
+                        handleNavClick();
+                        setMobileMenuOpen(false);
+                      }}
                       className="inline-block text-3xl font-heading font-semibold text-white bg-black px-3 py-1 hover:bg-[#5371CA] transition-colors"
                     >
                       {item.label}
@@ -159,7 +168,10 @@ export function Navigation() {
               <div className="mt-8 space-y-4 w-full max-w-xs">
                 <Link
                   href="/pricing"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={() => {
+                    handleNavClick();
+                    setMobileMenuOpen(false);
+                  }}
                   className="block w-full bg-[#5371CA] hover:bg-[#6381d4] text-white font-semibold text-lg px-6 py-3 rounded-full transition-colors text-center"
                 >
                   Start free trial

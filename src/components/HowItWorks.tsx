@@ -110,7 +110,7 @@ export function HowItWorks() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <section className="py-20 md:py-32 px-4 relative overflow-hidden">
+    <section className="py-12 md:py-16 px-4 relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900" />
       <div className="absolute top-1/4 left-0 w-96 h-96 bg-[#5371CA]/5 rounded-full blur-3xl" />
@@ -122,7 +122,7 @@ export function HowItWorks() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16 md:mb-24"
+          className="text-center mb-8 md:mb-12"
         >
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
@@ -134,10 +134,10 @@ export function HowItWorks() {
             <span className="text-slate-300 text-sm font-medium">Chrome Extension</span>
           </motion.div>
 
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-heading">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 font-heading">
             How the magic happens
           </h2>
-          <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
             From patient reply to colour-coded calendar in 6 simple steps
           </p>
 
@@ -145,7 +145,7 @@ export function HowItWorks() {
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="mt-12"
+            className="mt-6"
           >
             <ArrowDown className="w-6 h-6 text-slate-500 mx-auto" />
           </motion.div>
@@ -253,7 +253,7 @@ export function HowItWorks() {
           viewport={{ once: true }}
           className="mt-16 md:mt-24"
         >
-          <h3 className="text-xl md:text-2xl font-bold text-white text-center mb-8 font-heading">
+          <h3 className="text-2xl md:text-3xl font-bold text-white text-center mb-8 font-heading">
             What the colours mean
           </h3>
 

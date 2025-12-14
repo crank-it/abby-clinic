@@ -265,10 +265,10 @@ function ManualProcessSection() {
             <span className="text-red-300 text-sm font-medium">The current reality</span>
           </motion.div>
 
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-heading">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 font-heading">
             The manual SMS checking trap
           </h2>
-          <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto">
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
             Every patient reply triggers the same tedious process. Here&apos;s what your team does dozens of times per day:
           </p>
         </motion.div>
@@ -459,10 +459,10 @@ function AbbyJourneySection() {
             <span className="text-emerald-300 text-sm font-medium">With Abby</span>
           </motion.div>
 
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-heading">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 font-heading">
             The automated journey
           </h2>
-          <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
             From patient reply to colour-coded calendar - every step handled automatically
           </p>
 
@@ -506,10 +506,10 @@ function WhatAbbyUnderstandsSection() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-heading">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 font-heading">
             What Abby understands
           </h2>
-          <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
             Click any message to see how Abby interprets it. Our AI handles the nuance so you don&apos;t have to.
           </p>
         </motion.div>
@@ -603,10 +603,10 @@ function TechnicalSpecsSection() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-heading">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 font-heading">
             Technical specifications
           </h2>
-          <p className="text-slate-400 text-lg md:text-xl">
+          <p className="text-slate-400 text-lg">
             The details for those who want them
           </p>
         </motion.div>
@@ -697,7 +697,7 @@ export default function HowItWorksPage() {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-8 font-heading"
+            className="text-3xl md:text-4xl font-bold text-white mb-4 font-heading"
           >
             How Abby works
           </motion.h1>
@@ -705,7 +705,7 @@ export default function HowItWorksPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-slate-400 text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed"
+            className="text-slate-400 text-lg max-w-2xl mx-auto"
           >
             See exactly what happens at each step - from the manual nightmare you&apos;re escaping to the automated simplicity you&apos;re gaining.
           </motion.p>
@@ -738,10 +738,10 @@ export default function HowItWorksPage() {
             viewport={{ once: true }}
             className="space-y-8"
           >
-            <h2 className="text-4xl md:text-6xl font-bold text-white font-heading">
+            <h2 className="text-2xl md:text-3xl font-bold text-white font-heading">
               Ready to escape the manual trap?
             </h2>
-            <p className="text-slate-400 text-xl md:text-2xl max-w-2xl mx-auto">
+            <p className="text-slate-400 text-lg max-w-2xl mx-auto">
               Try Abby free for 14 days. No credit card required.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
