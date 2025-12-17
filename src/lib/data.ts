@@ -385,7 +385,7 @@ export const comprehensiveFAQ = {
     },
     {
       q: "Does Abby work on mobile devices or tablets?",
-      a: "No—desktop Chrome only. There is no mobile app."
+      a: "No—it's a desktop Chrome application only. However, you do still see the SMS replies in your appointment notes, which can be incredibly helpful for some people."
     },
     {
       q: "Why does the Chrome extension need those permissions?",
