@@ -693,7 +693,7 @@ function CelebrationSection() {
         className="absolute top-20 left-[3%] hidden md:block lg:left-[5%] xl:left-[8%]"
       >
         <motion.img
-          src="/server.png"
+          src="/new-server.png"
           alt="Abby for the win"
           className="w-28 lg:w-36 xl:w-44 drop-shadow-2xl"
           animate={{ y: [-15, 15, -15], rotate: [-5, 5, -5] }}
@@ -738,7 +738,7 @@ function CelebrationSection() {
         className="absolute bottom-28 right-[5%] hidden md:block lg:right-[8%] xl:right-[12%]"
       >
         <motion.img
-          src="/server.png"
+          src="/new-server.png"
           alt="Server"
           className="w-24 lg:w-28 xl:w-32 drop-shadow-2xl"
           animate={{ y: [8, -8, 8], rotate: [2, -2, 2] }}
@@ -966,7 +966,7 @@ function WhatAbbyUnderstandsSection() {
                   transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
                 >
                   <Image
-                    src="/server.png"
+                    src="/new-server.png"
                     alt="Australian Servers"
                     width={100}
                     height={100}
@@ -1034,7 +1034,7 @@ function WhatAbbyUnderstandsSection() {
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
                 <Image
-                  src="/server.png"
+                  src="/new-server.png"
                   alt="Abby"
                   width={120}
                   height={120}

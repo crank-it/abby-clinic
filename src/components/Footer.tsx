@@ -57,7 +57,7 @@ export function Footer() {
           <div className="hidden md:block md:col-span-1">
             <Link href="/" className="inline-block mb-4">
               <motion.img
-                src="/server.png"
+                src="/new-server.png"
                 alt="Abby"
                 className="h-40 w-auto"
                 animate={{ y: [-3, 3, -3] }}
@@ -103,7 +103,7 @@ export function Footer() {
           <div className="md:hidden flex items-start justify-center">
             <Link href="/">
               <motion.img
-                src="/server.png"
+                src="/new-server.png"
                 alt="Abby"
                 className="max-h-28 max-w-full object-contain"
                 animate={{ y: [-3, 3, -3] }}

@@ -191,7 +191,7 @@ export default function PricingPage() {
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         >
           <Image
-            src="/server.png"
+            src="/new-server.png"
             alt="Abby"
             width={100}
             height={100}
@@ -456,7 +456,7 @@ export default function PricingPage() {
                 transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
               >
                 <Image
-                  src="/server.png"
+                  src="/new-server.png"
                   alt="Abby"
                   width={80}
                   height={80}

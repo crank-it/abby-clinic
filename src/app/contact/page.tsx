@@ -100,9 +100,9 @@ function FloatingParticles({ count = 20 }: { count?: number }) {
 
 export default function ContactPage() {
   const robots = [
-    { src: '/server.png', position: 'left-top', className: 'hidden md:block -left-16 top-20 w-32 h-32 -rotate-12' },
+    { src: '/new-server.png', position: 'left-top', className: 'hidden md:block -left-16 top-20 w-32 h-32 -rotate-12' },
     { src: '/hiw2.png', position: 'right-top', className: 'hidden md:block -right-14 top-32 w-28 h-28 rotate-12' },
-    { src: '/server.png', position: 'left-bottom', className: 'hidden md:block -left-12 bottom-40 w-28 h-28 rotate-6' },
+    { src: '/new-server.png', position: 'left-bottom', className: 'hidden md:block -left-12 bottom-40 w-28 h-28 rotate-6' },
     { src: '/interpritation.png', position: 'right-bottom', className: 'hidden md:block -right-16 bottom-24 w-32 h-32 -rotate-6' },
     { src: '/abby-sends.png', position: 'left-mid', className: 'hidden lg:block -left-20 top-1/2 w-36 h-36 -rotate-3' },
   ];

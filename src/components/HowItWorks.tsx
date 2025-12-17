@@ -76,7 +76,7 @@ function JourneyStep({ step, index, isLast }: { step: typeof extensionFlow[0]; i
           className={`relative flex-shrink-0 w-20 h-20 md:w-28 md:h-28 rounded-3xl ${[1, 2, 3, 4, 5, 6].includes(step.step) ? '' : `bg-gradient-to-br ${config.gradient}`} flex items-center justify-center shadow-2xl ${[1, 2, 3, 4, 5, 6].includes(step.step) ? '' : config.glow}`}
         >
           {step.step === 1 ? (
-            <img src="/server.png" alt={step.title} className="w-full h-full object-cover rounded-3xl" />
+            <img src="/new-server.png" alt={step.title} className="w-full h-full object-cover rounded-3xl" />
           ) : step.step === 2 ? (
             <img src="/hiw2.png" alt={step.title} className="w-full h-full object-cover rounded-3xl" />
           ) : step.step === 3 ? (

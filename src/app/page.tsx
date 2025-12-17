@@ -203,7 +203,7 @@ export default function Home() {
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           >
             <Image
-              src="/server.png"
+              src="/new-server.png"
               alt="Abby"
               width={120}
               height={120}
@@ -263,7 +263,7 @@ export default function Home() {
             transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
           >
             <Image
-              src="/server.png"
+              src="/new-server.png"
               alt="Abby"
               width={85}
               height={85}
@@ -497,7 +497,7 @@ export default function Home() {
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               >
                 <Image
-                  src="/server.png"
+                  src="/new-server.png"
                   alt="Abby"
                   width={80}
                   height={80}

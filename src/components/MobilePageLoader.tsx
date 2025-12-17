@@ -17,12 +17,12 @@ const testimonials = [
 ];
 
 const pageRobots: Record<string, string> = {
-  '/': '/server.png',
+  '/': '/new-server.png',
   '/how-it-works': '/abby-sends.png',
   '/pricing': '/hiw2.png',
   '/faq': '/interpritation.png',
-  '/about': '/server.png',
-  '/contact': '/server.png',
+  '/about': '/new-server.png',
+  '/contact': '/new-server.png',
 };
 
 export function MobilePageLoader() {
@@ -36,7 +36,7 @@ export function MobilePageLoader() {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Get robot image for current page
-  const robotImage = pageRobots[pathname] || '/server.png';
+  const robotImage = pageRobots[pathname] || '/new-server.png';
 
   // Check if mobile on mount
   useEffect(() => {
