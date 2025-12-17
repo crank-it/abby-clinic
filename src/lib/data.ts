@@ -356,12 +356,20 @@ export const comprehensiveFAQ = {
     {
       q: "What is the Clinic Pin?",
       a: "A single PIN set during onboarding that authenticates the Chrome extension. All staff in your clinic share this PIN—no individual logins needed."
+    },
+    {
+      q: "How long until Abby starts working after setup?",
+      a: "Allow 1-2 business days. Abby needs to sync with your Cliniko account and can only interpret SMS sent after activation. Depending on when your appointment reminders go out (typically 24-72 hours before appointments), you'll see colours appear within 1-2 business days."
+    },
+    {
+      q: "Do all my staff need separate Abby accounts?",
+      a: "No. Only one API key is needed per clinic. The Clinic Pin system allows your entire team to access Abby without separate logins or API keys—everyone shares the same Clinic Pin."
     }
   ],
   extension: [
     {
       q: "Why do the colours disappear when I click an appointment?",
-      a: "Abby overlays colours on Cliniko's calendar without modifying underlying data. Clicking an appointment refreshes Cliniko's display, clearing the overlay. Click the Abby extension icon to reapply colours."
+      a: "Cliniko refreshes the page when you click an appointment, which clears Abby's colour overlay. Simply click the Abby icon in your toolbar again to reapply the colours—takes one second."
     },
     {
       q: "Why is there a 15-minute delay before SMS responses appear?",
@@ -378,6 +386,10 @@ export const comprehensiveFAQ = {
     {
       q: "Does Abby work on mobile devices or tablets?",
       a: "No—desktop Chrome only. There is no mobile app."
+    },
+    {
+      q: "Why does the Chrome extension need those permissions?",
+      a: "The extension needs 'tabs' permission to read your Cliniko calendar, 'scripting' permission to apply colour overlays, and 'storage' permission to remember your Clinic Pin. Abby cannot access other websites or your browsing history—only the Cliniko calendar page when you're logged in."
     }
   ],
   ai: [
@@ -396,6 +408,14 @@ export const comprehensiveFAQ = {
     {
       q: "Can Abby understand emojis?",
       a: "Yes, most common emojis work. Our AI is continuously trained on real-world responses including emoji-only replies like 👍."
+    },
+    {
+      q: "Does capitalisation matter in SMS replies?",
+      a: "No. Abby interprets 'Y', 'y', 'YES', 'yes', 'yep', 'YEP' and all natural variations equally. Case doesn't matter."
+    },
+    {
+      q: "Do I need to change my SMS reminder template?",
+      a: "No specific format required. Abby understands natural language responses. However, adding a clear call-to-action like 'Reply YES to confirm' can improve patient response rates."
     }
   ],
   limitations: [
@@ -405,7 +425,7 @@ export const comprehensiveFAQ = {
     },
     {
       q: "Why didn't Abby capture my manual SMS conversation?",
-      a: "Abby only captures replies to standard Cliniko appointment reminder SMS. Manual messages, one-off communications, and patient-initiated SMS are not captured."
+      a: "Abby only processes replies to Cliniko's automated appointment reminder SMS. Manual messages sent through Cliniko's messaging feature lack the appointment identifier in Cliniko's API, so Abby can't link them to appointments. This is a Cliniko API limitation."
     },
     {
       q: "Can I use Abby with practice management software other than Cliniko?",
@@ -418,6 +438,22 @@ export const comprehensiveFAQ = {
     {
       q: "Does Abby modify my Cliniko data?",
       a: "Only the appointment notes field. Abby cannot change appointment status, modify patient records, or alter any other data."
+    },
+    {
+      q: "I use Cliniko but send SMS through another platform. Will Abby work?",
+      a: "No. Abby requires Cliniko's built-in automated appointment reminder SMS. Third-party SMS platforms (like MessageMedia, SMS Broadcast, etc.) don't include the appointment identifier that Abby needs to link replies to appointments in Cliniko's API."
+    },
+    {
+      q: "Can I use Abby on my iPad or phone?",
+      a: "The Chrome extension only works on desktop Chrome browsers. However, Abby posts all interpreted responses to your appointment notes in Cliniko, which you can view on any device—iPad, iPhone, Android. Desktop users see colours, mobile users see notes. Same information, different display."
+    },
+    {
+      q: "Is Abby available in the United States?",
+      a: "Not currently. US healthcare compliance requirements make it cost-prohibitive for us at this stage. We serve Australia, New Zealand, and the United Kingdom. We hope to support the US market in the future."
+    },
+    {
+      q: "What happens when a patient sends a confusing or contradictory reply?",
+      a: "Conflicting intents (like 'Yes but I can't make it') trigger a RED flag with 'Call to discuss' note. Abby doesn't guess when the intent is unclear—it flags for your attention instead."
     }
   ],
   privacy: [
@@ -513,5 +549,6 @@ export const whatAbbyIsNot = [
   "A mobile application",
   "Compatible with browsers other than Chrome",
   "Compatible with practice management systems other than Cliniko",
+  "Compatible with manual SMS or third-party SMS platforms",
   "A real-time system (15-minute polling cycle)"
 ];
