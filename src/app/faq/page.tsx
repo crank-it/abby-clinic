@@ -546,47 +546,6 @@ export default function FAQPage() {
             <div className="absolute -top-24 -right-24 w-48 h-48 bg-[#5371CA]/20 rounded-full blur-3xl" />
             <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl" />
 
-            {/* Peeking robots */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="hidden md:block absolute -left-8 top-1/2 -translate-y-1/2"
-            >
-              <motion.div
-                animate={{ x: [-3, 3, -3], rotate: [-5, 5, -5] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <Image
-                  src="/hiw2.png"
-                  alt="Abby"
-                  width={80}
-                  height={80}
-                  className="drop-shadow-[0_0_15px_rgba(83,113,202,0.5)]"
-                />
-              </motion.div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="hidden md:block absolute -right-8 top-1/2 -translate-y-1/2"
-            >
-              <motion.div
-                animate={{ x: [3, -3, 3], rotate: [5, -5, 5] }}
-                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <Image
-                  src="/abby-sends.png"
-                  alt="Abby"
-                  width={80}
-                  height={80}
-                  className="drop-shadow-[0_0_15px_rgba(147,51,234,0.5)]"
-                />
-              </motion.div>
-            </motion.div>
-
             <div className="relative text-center">
               <motion.div
                 initial={{ scale: 0 }}
