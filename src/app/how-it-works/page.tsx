@@ -693,7 +693,7 @@ function CelebrationSection() {
         className="absolute top-20 left-[3%] hidden md:block lg:left-[5%] xl:left-[8%]"
       >
         <motion.img
-          src="/hiw1.png"
+          src="/server.png"
           alt="Abby for the win"
           className="w-28 lg:w-36 xl:w-44 drop-shadow-2xl"
           animate={{ y: [-15, 15, -15], rotate: [-5, 5, -5] }}
@@ -1034,7 +1034,7 @@ function WhatAbbyUnderstandsSection() {
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
                 <Image
-                  src="/hiw1.png"
+                  src="/server.png"
                   alt="Abby"
                   width={120}
                   height={120}

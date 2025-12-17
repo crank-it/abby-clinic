@@ -211,7 +211,7 @@ export default function FAQPage() {
           transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
         >
           <Image
-            src="/hiw1.png"
+            src="/server.png"
             alt="Abby"
             width={90}
             height={90}

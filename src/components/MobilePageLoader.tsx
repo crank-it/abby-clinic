@@ -17,11 +17,11 @@ const testimonials = [
 ];
 
 const pageRobots: Record<string, string> = {
-  '/': '/hiw1.png',
+  '/': '/server.png',
   '/how-it-works': '/abby-sends.png',
   '/pricing': '/hiw2.png',
   '/faq': '/interpritation.png',
-  '/about': '/hiw1.png',
+  '/about': '/server.png',
   '/contact': '/server.png',
 };
 
@@ -36,7 +36,7 @@ export function MobilePageLoader() {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Get robot image for current page
-  const robotImage = pageRobots[pathname] || '/hiw1.png';
+  const robotImage = pageRobots[pathname] || '/server.png';
 
   // Check if mobile on mount
   useEffect(() => {

@@ -209,7 +209,7 @@ export default function AboutPage() {
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         >
           <Image
-            src="/hiw1.png"
+            src="/server.png"
             alt="Abby"
             width={100}
             height={100}
